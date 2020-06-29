@@ -110,7 +110,7 @@ SpriteShapeRenderer:
   m_ShapeTexture: {fileID: 2800000, guid: 5f1133fcc63a14ed1adaaf0c5d9e38a5, type: 3}
   m_Sprites: []
   m_LocalAABB:
-    m_Center: {x: 0, y: 1, z: 0}
+    m_Center: {x: 2, y: 1, z: 0}
     m_Extent: {x: 2, y: 1, z: 0}
 --- !u!114 &3833968775334474627
 MonoBehaviour:
@@ -127,7 +127,7 @@ MonoBehaviour:
   m_Spline:
     m_IsOpenEnded: 0
     m_ControlPoints:
-    - position: {x: -2, y: 1.8, z: 0}
+    - position: {x: 0, y: 1.8, z: 0}
       leftTangent: {x: 0, y: 0, z: 0}
       rightTangent: {x: 0, y: 0, z: 0}
       mode: 0
@@ -136,7 +136,7 @@ MonoBehaviour:
       bevelSize: 0
       spriteIndex: 0
       corner: 1
-    - position: {x: -2, y: 2, z: 0}
+    - position: {x: 0, y: 2, z: 0}
       leftTangent: {x: 0, y: 0, z: 0}
       rightTangent: {x: 0, y: 0, z: 0}
       mode: 0
@@ -145,7 +145,7 @@ MonoBehaviour:
       bevelSize: 0
       spriteIndex: 0
       corner: 1
-    - position: {x: 2, y: 2, z: 0}
+    - position: {x: 4, y: 2, z: 0}
       leftTangent: {x: 0, y: 0, z: 0}
       rightTangent: {x: 0, y: 0, z: 0}
       mode: 0
@@ -154,7 +154,7 @@ MonoBehaviour:
       bevelSize: 0
       spriteIndex: 0
       corner: 1
-    - position: {x: 2, y: 1.8, z: 0}
+    - position: {x: 4, y: 1.8, z: 0}
       leftTangent: {x: 0, y: 0, z: 0}
       rightTangent: {x: 0, y: 0, z: 0}
       mode: 0
@@ -194,13 +194,13 @@ EdgeCollider2D:
   m_Offset: {x: 0, y: 0}
   m_EdgeRadius: 0
   m_Points:
-  - {x: -2, y: 1.8}
-  - {x: -2, y: 2}
-  - {x: 2, y: 2}
-  - {x: 2, y: 1.8}
-  - {x: 0.9629628, y: 1.8}
-  - {x: -0.9629631, y: 1.8000001}
-  - {x: -2, y: 1.8}
+  - {x: 0, y: 1.8}
+  - {x: 0, y: 2}
+  - {x: 4, y: 2}
+  - {x: 4, y: 1.8}
+  - {x: 2.9629626, y: 1.8}
+  - {x: 1.0370369, y: 1.8000001}
+  - {x: 0, y: 1.8}
 --- !u!1 &9078275909539392448
 GameObject:
   m_ObjectHideFlags: 0
@@ -279,7 +279,7 @@ SpriteShapeRenderer:
   m_ShapeTexture: {fileID: 2800000, guid: 5f1133fcc63a14ed1adaaf0c5d9e38a5, type: 3}
   m_Sprites: []
   m_LocalAABB:
-    m_Center: {x: 0, y: -1, z: 0}
+    m_Center: {x: 2, y: -1, z: 0}
     m_Extent: {x: 2, y: 1, z: 0}
 --- !u!114 &8402569552496878005
 MonoBehaviour:
@@ -296,7 +296,7 @@ MonoBehaviour:
   m_Spline:
     m_IsOpenEnded: 0
     m_ControlPoints:
-    - position: {x: -2, y: -2, z: 0}
+    - position: {x: 0, y: -2, z: 0}
       leftTangent: {x: 0, y: 0, z: 0}
       rightTangent: {x: 0, y: 0, z: 0}
       mode: 0
@@ -305,7 +305,7 @@ MonoBehaviour:
       bevelSize: 0
       spriteIndex: 0
       corner: 1
-    - position: {x: -2, y: -1.8, z: 0}
+    - position: {x: 0, y: -1.8, z: 0}
       leftTangent: {x: 0, y: 0, z: 0}
       rightTangent: {x: 0, y: 0, z: 0}
       mode: 0
@@ -314,7 +314,7 @@ MonoBehaviour:
       bevelSize: 0
       spriteIndex: 0
       corner: 1
-    - position: {x: 2, y: -1.8, z: 0}
+    - position: {x: 4, y: -1.8, z: 0}
       leftTangent: {x: 0, y: 0, z: 0}
       rightTangent: {x: 0, y: 0, z: 0}
       mode: 0
@@ -323,7 +323,7 @@ MonoBehaviour:
       bevelSize: 0
       spriteIndex: 0
       corner: 1
-    - position: {x: 2, y: -2, z: 0}
+    - position: {x: 4, y: -2, z: 0}
       leftTangent: {x: 0, y: 0, z: 0}
       rightTangent: {x: 0, y: 0, z: 0}
       mode: 0
@@ -363,10 +363,10 @@ EdgeCollider2D:
   m_Offset: {x: 0, y: 0}
   m_EdgeRadius: 0
   m_Points:
-  - {x: -2, y: -2}
-  - {x: -2, y: -1.8}
-  - {x: 2, y: -1.8}
-  - {x: 2, y: -2}
-  - {x: 0.9629628, y: -1.9999998}
-  - {x: -0.9629631, y: -2}
-  - {x: -2, y: -2}
+  - {x: 0, y: -2}
+  - {x: 0, y: -1.8}
+  - {x: 4, y: -1.8}
+  - {x: 4, y: -2}
+  - {x: 2.9629626, y: -1.9999998}
+  - {x: 1.0370369, y: -2}
+  - {x: 0, y: -2}
