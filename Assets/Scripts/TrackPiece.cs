@@ -10,5 +10,8 @@ public class TrackPiece : ScriptableObject
     // The distance between the start of this trackPiece and the next
     public Vector2 shift;
     // The orientation shift of the next piece
-    public Vector2 orientation;
+    public float orientation;
+    // The probability of this piece being selected
+    [Range(1,5)]
+    public float frequency = 1f;
 }

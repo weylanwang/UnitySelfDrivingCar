@@ -15,4 +15,5 @@ MonoBehaviour:
   trackPrefab: {fileID: 7724167377943868777, guid: 2550eb98c9da449aa93fb17d8cc32113,
     type: 3}
   shift: {x: 4, y: 0}
-  orientation: {x: 1, y: 0}
+  orientation: 0
+  frequency: 3

@@ -42,6 +42,7 @@ GameObject:
   - component: {fileID: 2019247988072148491}
   - component: {fileID: 7480851325615410724}
   - component: {fileID: 3579880657952562002}
+  - component: {fileID: 5103630621453651392}
   m_Layer: 0
   m_Name: Line (1)
   m_TagString: Untagged
@@ -212,3 +213,30 @@ MonoBehaviour:
   m_OptimizeGeometry: 1
   m_EnableTangents: 0
   m_GeometryCached: 0
+--- !u!68 &5103630621453651392
+EdgeCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6370584015337766843}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_EdgeRadius: 0
+  m_Points:
+  - {x: 6, y: -2}
+  - {x: 6, y: 2}
+  - {x: 0, y: 2}
+  - {x: 0, y: 1.8}
+  - {x: 5.8, y: 1.8}
+  - {x: 5.8, y: -1.8}
+  - {x: 0, y: -1.8}
+  - {x: 0, y: -2}
+  - {x: 5.7084446, y: -2}
+  - {x: 5.9235554, y: -2}
+  - {x: 6, y: -2}

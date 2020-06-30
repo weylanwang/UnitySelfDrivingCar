@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   trackPrefab: {fileID: 1280093799142522025, guid: 807ac2ecef276467b80df0628ebcc3bf,
     type: 3}
-  length: {x: 0, y: 0}
-  direction: {x: 0, y: 0}
+  shift: {x: 4, y: 2}
+  orientation: 90
+  frequency: 2

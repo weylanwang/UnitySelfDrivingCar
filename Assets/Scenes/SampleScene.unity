@@ -235,10 +235,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   start: {fileID: 11400000, guid: 1adba67b61d384eb5b6e03e07e6492d4, type: 2}
   end: {fileID: 11400000, guid: 34410e186cd184ad880280f1332e568e, type: 2}
-  trackSize: 5
+  trackSize: 12
+  useProbability: 1
   trackPieces:
   - {fileID: 11400000, guid: 6796683a312b844d1931929223c5936e, type: 2}
   - {fileID: 11400000, guid: 7062d9869d60e4ef2b0cbcae3726fc42, type: 2}
+  - {fileID: 11400000, guid: fa1362a398b0446eb9cc9cab0f1e3a9f, type: 2}
+  - {fileID: 11400000, guid: 2df2039b72d214fcc84ac5eea85d101a, type: 2}
+  - {fileID: 11400000, guid: ab0b89ab6e717486595de46f9b93358f, type: 2}
+  - {fileID: 11400000, guid: 8163fec09cc2c4e009a221584131a9ce, type: 2}
+  - {fileID: 11400000, guid: edba20a74157c4d41a38ea37e039173e, type: 2}
+  - {fileID: 11400000, guid: 69d09b4edad1b427e83000af659acfe9, type: 2}
+  - {fileID: 11400000, guid: 7f62dafbcf2f74febba389521c346f69, type: 2}
+  - {fileID: 11400000, guid: 592d3f88271b241ee885f1b513584b66, type: 2}
+  - {fileID: 11400000, guid: 1d739f46899a04e79b86a4008dc6571f, type: 2}
+  - {fileID: 11400000, guid: 382cabe9562b14b62a877fcd6101df25, type: 2}
+  - {fileID: 11400000, guid: 5a6d203b1d0054489aa8f41c1c09ca93, type: 2}
+  - {fileID: 11400000, guid: b1c285208577145d8a8912a7019629ce, type: 2}
   track: []
 --- !u!4 &1338117434
 Transform:

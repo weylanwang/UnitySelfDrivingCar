@@ -11,6 +11,9 @@ public class CreateTrack : MonoBehaviour
     // Number of pieces in-between the start and end piece.
     public uint trackSize;
 
+    // To use probabilities or not
+    public bool useProbability;
+
     // List of usable pieces to create the track
     public TrackPiece[] trackPieces;
 
@@ -23,6 +26,12 @@ public class CreateTrack : MonoBehaviour
 
         // Begin Track Creation
         StartCreation();
+
+        // Check for overlaps        
+        Debug.Log(CheckOverlap());
+
+        //for (int i = 1; i != 10; i++)
+        //    Invoke("RemakeTrack", 5f * i);
     }
 
     private void CheckPieces()
@@ -43,7 +52,6 @@ public class CreateTrack : MonoBehaviour
             Debug.Assert(piece != null, "TrackPiece with index number " + i + " is null");
             Debug.Assert(piece.trackPrefab != null, piece.name + "'s prefab is null");
             Debug.Assert(piece.shift != Vector2.zero, piece.name + "'s prefab's length is (0, 0)");
-            Debug.Assert(piece.orientation != Vector2.zero, piece.name + "'s prefab's direction is (0, 0)");
             i++;
         }
     }
@@ -52,23 +60,56 @@ public class CreateTrack : MonoBehaviour
     {
         System.Random rand = new System.Random();
 
+        // Pool of Track Piece Index Numbers
+        List<int> indexPool = new List<int>();
+        for (int i = 0; i != trackPieces.Length; i++)
+        {
+            if (useProbability)
+                for (int k = 0; k != trackPieces[i].frequency; k++)
+                    indexPool.Add(i);
+            else
+                indexPool.Add(i);
+        }
+
         // Add 2 more spaces to the track for the start and end pieces
         track = new GameObject[trackSize + 2];
 
         // Create the Starting Piece
-        Vector2 trackPosition = start.shift;
-        Vector2 orientation = start.orientation.normalized;
-        track[0] = Instantiate(start.trackPrefab, Vector3.zero, Quaternion.Euler(orientation));
+        track[0] = Instantiate(start.trackPrefab, Vector3.zero, Quaternion.Euler(Vector3.zero));
+        Quaternion orientation = Quaternion.Euler(Vector3.zero);
+        Vector3 trackPosition = start.shift;
 
         // Create the In-Between Pieces
         for (int i = 1; i <= trackSize; i++)
         {
-            TrackPiece random_piece = trackPieces[rand.Next(0, trackPieces.Length)];
-            track[i] = Instantiate(random_piece.trackPrefab, trackPosition, Quaternion.Euler(start.orientation));
-            trackPosition += random_piece.shift;
-            orientation = (orientation + random_piece.orientation).normalized;
+            TrackPiece random_piece = trackPieces[indexPool[rand.Next(0, indexPool.Count)]];
+            track[i] = Instantiate(random_piece.trackPrefab, trackPosition, orientation);
+            trackPosition += orientation * new Vector3(random_piece.shift.x, random_piece.shift.y, 0);
+            orientation *= Quaternion.Euler(new Vector3(0, 0, random_piece.orientation)).normalized;
         }
 
-        track[trackSize + 1] = Instantiate(end.trackPrefab, trackPosition, Quaternion.Euler(orientation));
+        track[trackSize + 1] = Instantiate(end.trackPrefab, trackPosition, orientation);
+    }
+
+    private bool CheckOverlap()
+    {
+        for (int i = 0; i != track.Length; i++)
+            for (int k = i + 1; k != track.Length; k++)
+                if ((track[i].transform.position - track[k].transform.position).sqrMagnitude < 8)
+                    return true;
+        return false;
+    }
+
+    private void DestroyTrack()
+    {
+        foreach (GameObject piece in track)
+            Destroy(piece);
+    }
+
+    private void RemakeTrack()
+    {
+        DestroyTrack();
+        StartCreation();
+        Debug.Log(CheckOverlap());
     }
 }
