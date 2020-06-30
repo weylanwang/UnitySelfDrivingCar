@@ -297,7 +297,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2011292033510989969}
   m_Layer: 0
-  m_Name: S-ShapeReversed
+  m_Name: S-ShapeReverse
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
