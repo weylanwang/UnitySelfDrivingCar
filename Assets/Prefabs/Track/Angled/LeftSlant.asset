@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7766ae388281a4cdab90c467eb87f1be, type: 3}
+  m_Name: LeftSlant
+  m_EditorClassIdentifier: 
+  trackPrefab: {fileID: 431063235917381778, guid: 086efe40dfd7143ffa58b3c3a8c83df9,
+    type: 3}
+  shift: {x: 4.585, y: 2.587}
+  orientation: 45
+  frequency: 2
