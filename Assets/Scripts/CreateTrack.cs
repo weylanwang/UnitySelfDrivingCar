@@ -11,13 +11,25 @@ public class CreateTrack : MonoBehaviour
     // Number of pieces in-between the start and end piece.
     public uint trackSize;
 
+    // Maximum attempts to create a non-intersecting track
+    public uint maxAttempts = 8;
+
     // To use probabilities or not
     public bool useProbability;
 
     // List of usable pieces to create the track
     public TrackPiece[] trackPieces;
 
+    // All Instantiated GameObjects comprising the track
     public GameObject[] track;
+
+    // Bool tracking track collisions with itself
+    private uint collisionCount = 0;
+
+    public void CollisionDetected()
+    {
+        collisionCount++;
+    }
 
     private void Start()
     {
@@ -25,13 +37,7 @@ public class CreateTrack : MonoBehaviour
         CheckPieces();
 
         // Begin Track Creation
-        StartCreation();
-
-        // Check for overlaps        
-        Debug.Log(CheckOverlap());
-
-        //for (int i = 1; i != 10; i++)
-        //    Invoke("RemakeTrack", 5f * i);
+        StartCoroutine("Create");
     }
 
     private void CheckPieces()
@@ -91,25 +97,28 @@ public class CreateTrack : MonoBehaviour
         track[trackSize + 1] = Instantiate(end.trackPrefab, trackPosition, orientation);
     }
 
-    private bool CheckOverlap()
+    private IEnumerator Create()
     {
-        for (int i = 0; i != track.Length; i++)
-            for (int k = i + 1; k != track.Length; k++)
-                if ((track[i].transform.position - track[k].transform.position).sqrMagnitude < 8)
-                    return true;
-        return false;
+        uint currentAttempt = 0;
+        uint expectedCollisionCount = (trackSize + 1) * 4;
+        while (collisionCount != expectedCollisionCount)
+        {
+            DestroyTrack();
+            collisionCount = 0;
+            StartCreation();
+            yield return new WaitForSeconds(0);
+            if (++currentAttempt >= maxAttempts)
+                break;
+        }
+
+        Debug.Assert(collisionCount == expectedCollisionCount, "Failed to Create a Track that doesn't intersect itself");
+        Debug.Log(currentAttempt + " attempts");
     }
 
     private void DestroyTrack()
     {
         foreach (GameObject piece in track)
-            Destroy(piece);
-    }
-
-    private void RemakeTrack()
-    {
-        DestroyTrack();
-        StartCreation();
-        Debug.Log(CheckOverlap());
+            if (piece != null)
+                Destroy(piece);
     }
 }

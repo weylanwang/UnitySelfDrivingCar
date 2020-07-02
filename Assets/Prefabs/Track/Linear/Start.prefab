@@ -42,7 +42,9 @@ GameObject:
   - component: {fileID: 4021300694982223327}
   - component: {fileID: 5483724430831322608}
   - component: {fileID: 1901929201486385286}
-  - component: {fileID: 457298044738362180}
+  - component: {fileID: 6318208392218731561}
+  - component: {fileID: 8425112273509632826}
+  - component: {fileID: 4678036237251549696}
   m_Layer: 0
   m_Name: Line (1)
   m_TagString: Untagged
@@ -213,8 +215,8 @@ MonoBehaviour:
   m_OptimizeGeometry: 1
   m_EnableTangents: 0
   m_GeometryCached: 0
---- !u!68 &457298044738362180
-EdgeCollider2D:
+--- !u!60 &6318208392218731561
+PolygonCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -227,16 +229,58 @@ EdgeCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
-  m_EdgeRadius: 0
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
   m_Points:
-  - {x: 0, y: -2}
-  - {x: 0, y: 2}
-  - {x: 6, y: 2}
-  - {x: 6, y: 1.8}
-  - {x: 0.2, y: 1.8}
-  - {x: 0.2, y: -1.8}
-  - {x: 6, y: -1.8}
-  - {x: 6, y: -2}
-  - {x: 0.29155552, y: -2}
-  - {x: 0.07644443, y: -2}
-  - {x: 0, y: -2}
+    m_Paths:
+    - - {x: 0, y: -2}
+      - {x: 0, y: 2}
+      - {x: 6, y: 2}
+      - {x: 6, y: 1.8}
+      - {x: 0.2, y: 1.8}
+      - {x: 0.2, y: -1.8}
+      - {x: 6, y: -1.8}
+      - {x: 6, y: -2}
+      - {x: 0.29155552, y: -2}
+      - {x: 0.07644443, y: -2}
+      - {x: 0, y: -2}
+--- !u!50 &8425112273509632826
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8332667139156161647}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 0
+  m_CollisionDetection: 0
+  m_Constraints: 7
+--- !u!114 &4678036237251549696
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8332667139156161647}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3208176a398c46d0acfc3f5412018ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
