@@ -26,7 +26,10 @@ public class CreateTrack : MonoBehaviour
     // Bool tracking track collisions with itself
     private uint collisionCount = 0;
 
+<<<<<<< HEAD
     // Increase collisionCount when a collider collision is detected
+=======
+>>>>>>> 070f3875845edff7013e32421fdbf88e86e2a94b
     public void CollisionDetected()
     {
         collisionCount++;
@@ -41,7 +44,10 @@ public class CreateTrack : MonoBehaviour
         StartCoroutine("Create");
     }
 
+<<<<<<< HEAD
     // Check if given pieces are valid
+=======
+>>>>>>> 070f3875845edff7013e32421fdbf88e86e2a94b
     private void CheckPieces()
     {
         // Check the Start and End pieces
@@ -64,7 +70,10 @@ public class CreateTrack : MonoBehaviour
         }
     }
 
+<<<<<<< HEAD
     // Called by Create
+=======
+>>>>>>> 070f3875845edff7013e32421fdbf88e86e2a94b
     private void StartCreation()
     {
         System.Random rand = new System.Random();
@@ -85,7 +94,10 @@ public class CreateTrack : MonoBehaviour
 
         // Create the Starting Piece
         track[0] = Instantiate(start.trackPrefab, Vector3.zero, Quaternion.Euler(Vector3.zero));
+<<<<<<< HEAD
         ChangeVisible(track[0], false);
+=======
+>>>>>>> 070f3875845edff7013e32421fdbf88e86e2a94b
         Quaternion orientation = Quaternion.Euler(Vector3.zero);
         Vector3 trackPosition = start.shift;
 
@@ -94,16 +106,24 @@ public class CreateTrack : MonoBehaviour
         {
             TrackPiece random_piece = trackPieces[indexPool[rand.Next(0, indexPool.Count)]];
             track[i] = Instantiate(random_piece.trackPrefab, trackPosition, orientation);
+<<<<<<< HEAD
             ChangeVisible(track[i], false);
+=======
+>>>>>>> 070f3875845edff7013e32421fdbf88e86e2a94b
             trackPosition += orientation * new Vector3(random_piece.shift.x, random_piece.shift.y, 0);
             orientation *= Quaternion.Euler(new Vector3(0, 0, random_piece.orientation)).normalized;
         }
 
         track[trackSize + 1] = Instantiate(end.trackPrefab, trackPosition, orientation);
+<<<<<<< HEAD
         ChangeVisible(track[trackSize + 1], false);
     }
 
     // Creates the Track and Checks for intersections. Destroys the track and repeats if intersection found
+=======
+    }
+
+>>>>>>> 070f3875845edff7013e32421fdbf88e86e2a94b
     private IEnumerator Create()
     {
         uint currentAttempt = 0;
@@ -120,6 +140,7 @@ public class CreateTrack : MonoBehaviour
 
         Debug.Assert(collisionCount == expectedCollisionCount, "Failed to Create a Track that doesn't intersect itself");
         Debug.Log(currentAttempt + " attempts");
+<<<<<<< HEAD
 
         // Set entire track visible
         foreach (GameObject piece in track)
@@ -127,12 +148,17 @@ public class CreateTrack : MonoBehaviour
     }
 
     // Destroys the Entire Track
+=======
+    }
+
+>>>>>>> 070f3875845edff7013e32421fdbf88e86e2a94b
     private void DestroyTrack()
     {
         foreach (GameObject piece in track)
             if (piece != null)
                 Destroy(piece);
     }
+<<<<<<< HEAD
 
     // Set the visibility of a track piece gameObject
     private void ChangeVisible(GameObject piece, bool visible)
@@ -140,4 +166,6 @@ public class CreateTrack : MonoBehaviour
         foreach (Renderer render in piece.transform.GetComponentsInChildren<Renderer>())
             render.enabled = visible;
     }
+=======
+>>>>>>> 070f3875845edff7013e32421fdbf88e86e2a94b
 }

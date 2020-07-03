@@ -46,7 +46,11 @@ GameObject:
   - component: {fileID: 7761830653513022093}
   - component: {fileID: 2843330734333374971}
   - component: {fileID: 8345206184064574618}
+<<<<<<< HEAD
   m_Layer: 8
+=======
+  m_Layer: 0
+>>>>>>> 070f3875845edff7013e32421fdbf88e86e2a94b
   m_Name: Line (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -329,7 +333,11 @@ GameObject:
   - component: {fileID: 4124693892001739320}
   - component: {fileID: 742545863051764290}
   - component: {fileID: 4341878458453927513}
+<<<<<<< HEAD
   m_Layer: 8
+=======
+  m_Layer: 0
+>>>>>>> 070f3875845edff7013e32421fdbf88e86e2a94b
   m_Name: Line (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

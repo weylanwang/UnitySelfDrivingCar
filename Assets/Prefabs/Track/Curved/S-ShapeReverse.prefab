@@ -14,7 +14,11 @@ GameObject:
   - component: {fileID: 4684606712500108773}
   - component: {fileID: 3223532587128473666}
   - component: {fileID: 3074333169246239496}
+<<<<<<< HEAD:Assets/Prefabs/Track/Curved/S-ShapeReverse.prefab
   m_Layer: 8
+=======
+  m_Layer: 0
+>>>>>>> 070f3875845edff7013e32421fdbf88e86e2a94b:Assets/Prefabs/Track/Curved/S-ShapeReversed.prefab
   m_Name: Line (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -377,7 +381,11 @@ GameObject:
   - component: {fileID: 2030145203473990}
   - component: {fileID: 2715331492029811908}
   - component: {fileID: 7721706188896870546}
+<<<<<<< HEAD:Assets/Prefabs/Track/Curved/S-ShapeReverse.prefab
   m_Layer: 8
+=======
+  m_Layer: 0
+>>>>>>> 070f3875845edff7013e32421fdbf88e86e2a94b:Assets/Prefabs/Track/Curved/S-ShapeReversed.prefab
   m_Name: Line (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

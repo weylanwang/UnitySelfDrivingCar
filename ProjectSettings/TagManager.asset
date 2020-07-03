@@ -13,6 +13,10 @@ TagManager:
   - UI
   - 
   - 
+<<<<<<< HEAD
+=======
+  - PreviousPiece
+>>>>>>> 070f3875845edff7013e32421fdbf88e86e2a94b
   - Wall
   - 
   - 
@@ -36,7 +40,10 @@ TagManager:
   - 
   - 
   - 
+<<<<<<< HEAD
   - 
+=======
+>>>>>>> 070f3875845edff7013e32421fdbf88e86e2a94b
   m_SortingLayers:
   - name: Default
     uniqueID: 0
