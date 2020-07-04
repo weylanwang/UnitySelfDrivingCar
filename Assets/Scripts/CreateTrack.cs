@@ -4,34 +4,44 @@ using UnityEngine;
 
 public class CreateTrack : MonoBehaviour
 {
+    #region Variables
     // Start and End Pieces
-    public TrackPiece start;
-    public TrackPiece end;
+    [SerializeField]
+    [Tooltip("Starting piece Prefab")]
+    private TrackPiece start;
+    [SerializeField]
+    [Tooltip("Ending piece Prefab")]
+    private TrackPiece end;
 
     // Number of pieces in-between the start and end piece.
-    public uint trackSize;
+    [SerializeField]
+    [Tooltip("Number of pieces in-between the start and end piece")]
+    private uint trackSize = 10;
 
     // Maximum attempts to create a non-intersecting track
-    public uint maxAttempts = 8;
+    [SerializeField]
+    [Tooltip("Maximum attempts to create a non-intersecting track")]
+    private uint maxAttempts = 8;
 
     // To use probabilities or not
-    public bool useProbability;
+    [SerializeField]
+    [Tooltip("True factors in piece frequency when selecting track pieces")]
+    private bool useProbability = true;
 
     // List of usable pieces to create the track
+    [SerializeField]
+    [Tooltip("List of usable pieces to create the track")]
     public TrackPiece[] trackPieces;
 
     // All Instantiated GameObjects comprising the track
-    public GameObject[] track;
+    public GameObject[] track
+    {   get; private set;   }
 
     // Bool tracking track collisions with itself
     private uint collisionCount = 0;
+    #endregion
 
-    // Increase collisionCount when a collider collision is detected
-    public void CollisionDetected()
-    {
-        collisionCount++;
-    }
-
+    #region Start
     private void Start()
     {
         // Check that valid pieces are provided
@@ -40,7 +50,17 @@ public class CreateTrack : MonoBehaviour
         // Begin Track Creation
         StartCoroutine("Create");
     }
+    #endregion
 
+    #region Public Functions
+    // Increase collisionCount when a collider collision is detected
+    public void CollisionDetected()
+    {
+        collisionCount++;
+    }
+    #endregion
+
+    #region Private Functions
     // Check if given pieces are valid
     private void CheckPieces()
     {
@@ -129,6 +149,8 @@ public class CreateTrack : MonoBehaviour
     // Destroys the Entire Track
     private void DestroyTrack()
     {
+        if (track == null)
+            return;
         foreach (GameObject piece in track)
             if (piece != null)
                 Destroy(piece);
@@ -140,4 +162,5 @@ public class CreateTrack : MonoBehaviour
         foreach (Renderer render in piece.transform.GetComponentsInChildren<Renderer>())
             render.enabled = visible;
     }
+    #endregion
 }
