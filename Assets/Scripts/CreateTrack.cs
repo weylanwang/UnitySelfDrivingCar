@@ -31,7 +31,7 @@ public class CreateTrack : MonoBehaviour
     // List of usable pieces to create the track
     [SerializeField]
     [Tooltip("List of usable pieces to create the track")]
-    public TrackPiece[] trackPieces;
+    private TrackPiece[] trackPieces;
 
     // All Instantiated GameObjects comprising the track
     public GameObject[] track
