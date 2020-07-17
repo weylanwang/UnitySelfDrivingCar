@@ -48,6 +48,20 @@ public class NeuralLayer {
         random = new Random();
         biasedWeights = initialWeight;
     }
+
+    //A constructor to be used when creating a neural layer from a string representation of the weights
+    public NeuralLayer(string initialWeight, uint row, uint col)
+    {
+        biasedWeights = new float[row, col];
+        int i = 0, j = 0;
+        foreach (string line in initialWeight.Trim().Split('\n'))
+        {
+            foreach (string value in line.Trim().Split(','))
+                biasedWeights[i, j++] = (float)Convert.ToDouble(value);
+            j = 0;
+            i++;
+        }
+    }
     #endregion
 
     #region Math Functions
@@ -127,6 +141,7 @@ public class NeuralLayer {
     //A utility function to convert weights into string representation
     public override string ToString() {
         StringBuilder sb = new StringBuilder("", CalculateSpace());
+        sb.Append(biasedWeights.GetLength(0) + "," + biasedWeights.GetLength(1) + "\n");
         for (int i = 0; i < biasedWeights.GetLength(0); i++) {
             sb.Append(biasedWeights[i, 0]);
             for (int j = 1; j < biasedWeights.GetLength(1); j++)
