@@ -105,7 +105,6 @@ public class NeuralLayer {
         possibleWeight[1] = RandomRange(-2 * stdDev, 2 * stdDev);
         possibleWeight[2] = RandomRange(-3 * stdDev, 3 * stdDev);
         int pick = random.Next(0, 3);
-        UnityEngine.Debug.Log(pick);
         return possibleWeight[pick];
     }
 
@@ -121,7 +120,6 @@ public class NeuralLayer {
     public float[] ProcessInputs(float[] inputs) {
         float[] biasedInputs = InputBiased(inputs);
         float[] results = MatrixVectorMultiplication(biasedWeights, biasedInputs);
-        UnityEngine.Debug.Log(results[0] + " " + results[1]);
         for (int i = 0; i < results.Length; i++) {
             results[i] = NeuralActivation(results[i]);
         }
