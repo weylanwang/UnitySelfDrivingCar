@@ -9,16 +9,13 @@ public class CarSensors : MonoBehaviour
     [Tooltip("The max range of a sensor")]
     private float range;
 
-    private Ray2D shootRay;
-    private RaycastHit2D shootHit;
     private int shootableMask;
     private LineRenderer sensorLine;
-    private Transform parentthing;
+    private float distance;
     #endregion
     void Start() {
         sensorLine = GetComponent<LineRenderer>();
         sensorLine.enabled = true;
-        parentthing = GetComponentInParent<Transform>();
         shootableMask = LayerMask.GetMask("Wall");
     }
 
@@ -30,7 +27,12 @@ public class CarSensors : MonoBehaviour
 
         if (hit.collider != null) {
             sensorLine.SetPosition(1, hit.point);
-            Debug.Log("Hit object: " + hit.point);
+            distance = hit.distance;
         }
+        else distance = range;
+    }
+
+    public float GetSensorReading() {
+        return distance;
     }
 }
