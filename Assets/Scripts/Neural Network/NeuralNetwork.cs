@@ -11,10 +11,10 @@ public class NeuralNetwork {
 
     #region Constructors
     //The constructor for a neural network with random weights given the dimensions
-    public NeuralNetwork(uint[] sizes) {
+    public NeuralNetwork(uint[] sizes, Int32 seed) {
         layers = new NeuralLayer[sizes.Length - 1];
         for (int i = 0; i < layers.Length; i++)
-            layers[i] = new NeuralLayer(sizes[i + 1], sizes[i], false);
+            layers[i] = new NeuralLayer(sizes[i + 1], sizes[i], seed, false);
     }
 
     //The constructor for a neural network given a string representation of each layer
