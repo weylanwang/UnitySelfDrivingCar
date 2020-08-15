@@ -8,7 +8,7 @@ public class NeuralLayer {
     //this layer's jth node to the ith node in the next layer. 
     private float[,] biasedWeights;
 
-    private static Random random;
+    private static System.Random random;
 
     //This delegate encodes which activation function we will be using.
     public delegate float ActivationFunction(float inputValue);
@@ -28,8 +28,8 @@ public class NeuralLayer {
 
     //A constructor to be used when we want to create a random neural, specifying rows, columns,
     //and whether or not to use the custom randomizer. 
-    public NeuralLayer(uint row, uint col, bool experimental = false) {
-        random = new Random();
+    public NeuralLayer(uint row, uint col, Int32 seed, bool experimental = false) {
+        random = new System.Random(seed);
         biasedWeights = new float[row, col + 1];
         float sd = 1f / col;
         for (int i = 0; i < biasedWeights.GetLength(0); i++) {
@@ -37,7 +37,8 @@ public class NeuralLayer {
                 if (experimental)
                     biasedWeights[i, j] = CustomRandom(sd);
                 else {
-                    biasedWeights[i, j] = RandomRange(-3 * sd, 3 * sd);
+                    float temp = RandomRange(-3 * sd, 3 * sd);
+                    biasedWeights[i, j] = temp;
                 }
         }
     }
@@ -45,7 +46,7 @@ public class NeuralLayer {
     //A constructor to be used when an existing weight matrix already exists.
     //This constructor assumes biases have already been added and taken care of.
     public NeuralLayer(float[,] initialWeight) {
-        random = new Random();
+        random = new System.Random();
         biasedWeights = initialWeight;
     }
 
@@ -121,7 +122,8 @@ public class NeuralLayer {
         float[] biasedInputs = InputBiased(inputs);
         float[] results = MatrixVectorMultiplication(biasedWeights, biasedInputs);
         for (int i = 0; i < results.Length; i++) {
-            results[i] = NeuralActivation(results[i]);
+            //We multiply by 2 and subtract by 1 since activation functions return between 0 and 1
+            results[i] = (NeuralActivation(results[i]))*2 - 1;
         }
         return results;
     }

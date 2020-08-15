@@ -126,8 +126,17 @@ public class CreateTrack : MonoBehaviour
     // Creates the Track and Checks for intersections. Destroys the track and repeats if intersection found
     private IEnumerator Create()
     {
+        if (trackSize == 0)
+        {
+            StartCreation();
+            foreach (GameObject piece in track)
+                ChangeVisible(piece, true);
+            yield break;
+        }
+
         uint currentAttempt = 0;
         uint expectedCollisionCount = (trackSize + 1) * 4;
+
         while (collisionCount != expectedCollisionCount)
         {
             DestroyTrack();
