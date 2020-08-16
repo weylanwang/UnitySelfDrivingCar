@@ -132,6 +132,7 @@ GameObject:
   - component: {fileID: 36780899}
   - component: {fileID: 36780898}
   - component: {fileID: 36780897}
+  - component: {fileID: 36780900}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -204,6 +205,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &36780900
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 36780896}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83812e1a9fdaba9409cf6408a216e019, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &127722198
 GameObject:
   m_ObjectHideFlags: 0
@@ -239,20 +252,14 @@ MonoBehaviour:
   maxAttempts: 8
   useProbability: 1
   trackPieces:
-  - {fileID: 11400000, guid: fa1362a398b0446eb9cc9cab0f1e3a9f, type: 2}
-  - {fileID: 11400000, guid: 7062d9869d60e4ef2b0cbcae3726fc42, type: 2}
   - {fileID: 11400000, guid: 6796683a312b844d1931929223c5936e, type: 2}
-  - {fileID: 11400000, guid: 2df2039b72d214fcc84ac5eea85d101a, type: 2}
-  - {fileID: 11400000, guid: ab0b89ab6e717486595de46f9b93358f, type: 2}
+  - {fileID: 11400000, guid: 7062d9869d60e4ef2b0cbcae3726fc42, type: 2}
   - {fileID: 11400000, guid: 8163fec09cc2c4e009a221584131a9ce, type: 2}
+  - {fileID: 11400000, guid: ab0b89ab6e717486595de46f9b93358f, type: 2}
   - {fileID: 11400000, guid: edba20a74157c4d41a38ea37e039173e, type: 2}
-  - {fileID: 11400000, guid: 69d09b4edad1b427e83000af659acfe9, type: 2}
   - {fileID: 11400000, guid: 7f62dafbcf2f74febba389521c346f69, type: 2}
+  - {fileID: 11400000, guid: 69d09b4edad1b427e83000af659acfe9, type: 2}
   - {fileID: 11400000, guid: 592d3f88271b241ee885f1b513584b66, type: 2}
-  - {fileID: 11400000, guid: 1d739f46899a04e79b86a4008dc6571f, type: 2}
-  - {fileID: 11400000, guid: 382cabe9562b14b62a877fcd6101df25, type: 2}
-  - {fileID: 11400000, guid: 5a6d203b1d0054489aa8f41c1c09ca93, type: 2}
-  - {fileID: 11400000, guid: b1c285208577145d8a8912a7019629ce, type: 2}
 --- !u!4 &127722200
 Transform:
   m_ObjectHideFlags: 0
@@ -277,8 +284,9 @@ GameObject:
   m_Component:
   - component: {fileID: 792593577}
   - component: {fileID: 792593576}
+  - component: {fileID: 792593578}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: Karen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -296,12 +304,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1eb296fe55a7ad444ad9ac35440128b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  importNetworks: 0
+  importFile: 
+  exportFile: 
   carsPerGeneration: 30
+  parentsPerGeneration: 5
+  layerSizes: 06000000040000000300000002000000
   carPrefab: {fileID: 4827311204441756465, guid: 83b28b30cf095eb4ba6759013c7ee430,
     type: 3}
   agentPrefab: {fileID: 4923977266068079471, guid: ac0d4e70517c8fe4fb609177b86f8a30,
     type: 3}
-  layerSizes: 06000000040000000300000002000000
+  TrackMaker: {fileID: 127722198}
 --- !u!4 &792593577
 Transform:
   m_ObjectHideFlags: 0
@@ -310,9 +323,25 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 792593575}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.6861939, y: 0.50573933, z: -0.45117188}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &792593578
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 792593575}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bac8d7b22152a42c6bc59353c1c1ddce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  totalGenerations: 15
+  recombinationChance: 0.25
+  mutationChance: 0.5
+  mutationAmount: 3

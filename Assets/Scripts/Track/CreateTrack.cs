@@ -39,13 +39,17 @@ public class CreateTrack : MonoBehaviour
 
     // Bool tracking track collisions with itself
     private uint collisionCount = 0;
+
+    private bool creationSuccessful;
+    public bool CreationSuccessful { get { return creationSuccessful; } }
     #endregion
 
     #region Start
-    private void Start()
-    {
+    private void Start() {
         // Check that valid pieces are provided
         CheckPieces();
+
+        creationSuccessful = false;
 
         // Begin Track Creation
         StartCoroutine("Create");
@@ -54,16 +58,14 @@ public class CreateTrack : MonoBehaviour
 
     #region Public Functions
     // Increase collisionCount when a collider collision is detected
-    public void CollisionDetected()
-    {
+    public void CollisionDetected() {
         collisionCount++;
     }
     #endregion
 
     #region Private Functions
     // Check if given pieces are valid
-    private void CheckPieces()
-    {
+    private void CheckPieces() {
         // Check the Start and End pieces
         Debug.Assert(start != null, "Start piece is null");
         Debug.Assert(end != null, "End piece is null");
@@ -75,8 +77,7 @@ public class CreateTrack : MonoBehaviour
         allPieces.AddRange(trackPieces);
         allPieces.Add(end);
         int i = 0;
-        foreach (TrackPiece piece in allPieces)
-        {
+        foreach (TrackPiece piece in allPieces) {
             Debug.Assert(piece != null, "TrackPiece with index number " + i + " is null");
             Debug.Assert(piece.trackPrefab != null, piece.name + "'s prefab is null");
             Debug.Assert(piece.shift != Vector2.zero, piece.name + "'s prefab's length is (0, 0)");
@@ -85,14 +86,12 @@ public class CreateTrack : MonoBehaviour
     }
 
     // Called by Create
-    private void StartCreation()
-    {
+    private void StartCreation() {
         System.Random rand = new System.Random();
 
         // Pool of Track Piece Index Numbers
         List<int> indexPool = new List<int>();
-        for (int i = 0; i != trackPieces.Length; i++)
-        {
+        for (int i = 0; i != trackPieces.Length; i++) {
             if (useProbability)
                 for (int k = 0; k != trackPieces[i].frequency; k++)
                     indexPool.Add(i);
@@ -110,8 +109,7 @@ public class CreateTrack : MonoBehaviour
         Vector3 trackPosition = start.shift;
 
         // Create the In-Between Pieces
-        for (int i = 1; i <= trackSize; i++)
-        {
+        for (int i = 1; i <= trackSize; i++) {
             TrackPiece random_piece = trackPieces[indexPool[rand.Next(0, indexPool.Count)]];
             track[i] = Instantiate(random_piece.trackPrefab, trackPosition, orientation);
             ChangeVisible(track[i], false);
@@ -126,8 +124,7 @@ public class CreateTrack : MonoBehaviour
     // Creates the Track and Checks for intersections. Destroys the track and repeats if intersection found
     private IEnumerator Create()
     {
-        if (trackSize == 0)
-        {
+        if (trackSize == 0) {
             StartCreation();
             foreach (GameObject piece in track)
                 ChangeVisible(piece, true);
@@ -137,8 +134,7 @@ public class CreateTrack : MonoBehaviour
         uint currentAttempt = 0;
         uint expectedCollisionCount = (trackSize + 1) * 4;
 
-        while (collisionCount != expectedCollisionCount)
-        {
+        while (collisionCount != expectedCollisionCount) {
             DestroyTrack();
             collisionCount = 0;
             StartCreation();
@@ -147,7 +143,11 @@ public class CreateTrack : MonoBehaviour
                 break;
         }
 
-        Debug.Assert(collisionCount == expectedCollisionCount, "Failed to Create a Track that doesn't intersect itself");
+        if (collisionCount == expectedCollisionCount) {
+            creationSuccessful = true;
+        }
+        else throw new System.Exception("Failed to Create a Track that doesn't intersect itself");
+
         Debug.Log(currentAttempt + " attempts");
 
         // Set entire track visible
@@ -156,8 +156,7 @@ public class CreateTrack : MonoBehaviour
     }
 
     // Destroys the Entire Track
-    private void DestroyTrack()
-    {
+    private void DestroyTrack() {
         if (track == null)
             return;
         foreach (GameObject piece in track)
@@ -166,8 +165,7 @@ public class CreateTrack : MonoBehaviour
     }
 
     // Set the visibility of a track piece gameObject
-    private void ChangeVisible(GameObject piece, bool visible)
-    {
+    private void ChangeVisible(GameObject piece, bool visible) {
         foreach (Renderer render in piece.transform.GetComponentsInChildren<Renderer>())
             render.enabled = visible;
     }
