@@ -477,7 +477,7 @@ GameObject:
   - component: {fileID: 4827311204441756430}
   m_Layer: 9
   m_Name: TestCar
-  m_TagString: Untagged
+  m_TagString: Car
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -580,7 +580,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64d1e43388e269342a877b2b2f057342, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enginePower: 15
+  enginePower: 30
   turningPower: 0.5
   sensorParent: {fileID: 3740357684241249233}
   AIControlled: 1

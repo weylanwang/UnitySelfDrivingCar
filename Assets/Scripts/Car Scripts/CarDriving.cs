@@ -35,6 +35,7 @@ public class CarDriving : MonoBehaviour {
     private float horizontalAxis;
     private float verticalAxis;
     private float velocity;
+    public float Velocity { get { return velocity; } }
     private float rotation;
     private Rigidbody2D carRB;
     private int score;
@@ -115,26 +116,35 @@ public class CarDriving : MonoBehaviour {
         return score;
     }
 
+    public void DecrementScore() {
+        if (score <= 0)
+            score = 0;
+        else
+            score--;
+    }
+
     public void SetLastCheckpoint(int checkpoint)
     {
         int difference = checkpoint - lastCheckpoint;
-        if (difference == 1 || difference <= -3)
-        {
+        if (difference == 1 || difference <= -3) {
             score++;
             delinquency = 0;
         }
-        else if (difference != 0)
-        {
+        else if (difference != 0) {
             score -= 2^delinquency;
             delinquency++;
-            Debug.Log("DD - Current: " + checkpoint + " prev: " + lastCheckpoint);
+            if (score < 0) score = 0;
         }
         lastCheckpoint = checkpoint;
     }
 
-    public int GetLastCheckpoint()
-    {
+    public int GetLastCheckpoint() {
         return lastCheckpoint;
+    }
+    
+    public void FakeCollision() {
+        Collision2D collision = null;
+        OnCollisionEnter2D(collision);
     }
     #endregion
 }

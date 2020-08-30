@@ -2,14 +2,18 @@
 
 public class NeuralNetwork {
     #region Variables
-    //The expected number of inputs and outputs
-    uint inputs = 0, outputs = 0;
-
     //The individual neural layers which form the neural network
-    NeuralLayer[] layers;
+    private NeuralLayer[] layers;
+    public NeuralLayer[] Layers { get { return layers; } }
     #endregion
 
     #region Constructors
+    public NeuralNetwork(NeuralLayer[] layers) {
+        this.layers = new NeuralLayer[layers.Length];
+        for (int i = 0; i < layers.Length; i++)
+            this.layers[i] = layers[i].DeepCopy();
+    }
+
     //The constructor for a neural network with random weights given the dimensions
     public NeuralNetwork(uint[] sizes, Int32 seed) {
         layers = new NeuralLayer[sizes.Length - 1];
@@ -65,9 +69,9 @@ public class NeuralNetwork {
                 numRows = StringToUInt(dimensions[0]);
                 numCols = StringToUInt(dimensions[1]);
 
-                if (inputs == 0)
-                    inputs = numCols - 1;
-                outputs = numRows;
+                //if (inputs == 0)
+                //    inputs = numCols - 1;
+                //outputs = numRows;
 
                 layerString = "";
                 layerIndex++;
@@ -108,6 +112,17 @@ public class NeuralNetwork {
 
     public uint StringToUInt(string value) {
         return Convert.ToUInt32(value.Trim());
+    }
+
+    public NeuralNetwork DeepCopy()
+    {
+        int layerSize = this.layers.Length;
+        NeuralLayer[] newLayers = new NeuralLayer[layerSize];
+
+        for (int i = 0; i < layerSize; i++)
+            newLayers[i] = layers[i].DeepCopy();
+
+        return new NeuralNetwork(newLayers);
     }
     #endregion
 }
