@@ -24,6 +24,7 @@ public class CarDriving : MonoBehaviour {
     [SerializeField]
     [Tooltip("The number of sensors that this car prefab has")]
     private int numSensors;
+    public int NumSensors { get { return numSensors; } }
     #endregion
 
     #region Public Variables
