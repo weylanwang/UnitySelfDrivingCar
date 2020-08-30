@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Track", menuName = "TrackPiece")]
-public class TrackPiece : ScriptableObject
-{
+public class TrackPiece : ScriptableObject {
     // The prefab
     public GameObject trackPrefab;
     // The distance between the start of this trackPiece and the next

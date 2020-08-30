@@ -5,19 +5,41 @@ using UnityEngine;
 
 public class Agent : MonoBehaviour {
     #region Variables
+    // Contains the NeuralNetwork for the agent
     private NeuralNetwork brain;
+
+    // Returns the NeuralNetwork of this agent
     public NeuralNetwork Brain { get { return brain; } }
+
+    // Contains the Prefab to help instantiate the car
     private GameObject carPrefab;
+
+    // Contains the script to grab the necessary information from CarDriving
     private CarDriving carScript;
+
+    // Will contain the instantiated car
     private GameObject car;
+
+    // Contains the score of the agent
     private int score;
+
+    // Determines if the agent is alive or not
     private bool isAlive;
+
+    // Returns if the agent is alive or not.
     public bool IsAlive { get { return isAlive; } }
+
+    // Holds a paralyzed score to determine if the agent is not moving or wiggling
     private int paralyzed;
+
+    // Additional score to determine if the agent is not moving or wiggling
+    private int pastScore;
+
+    // Getter and setter for the score of the agent
     public int Score { get { return score; } private set { score = value; } }
+
+    // Contains the reference to the agent manager
     private AgentManager agentManager;
-    private IEnumerator existenceCoroutine;
-    private IEnumerator engineCoroutine;
     #endregion
 
     #region Assignment Region
@@ -28,8 +50,7 @@ public class Agent : MonoBehaviour {
         this.brain = brain.DeepCopy();
         isAlive = true;
         paralyzed = 0;
-        existenceCoroutine = ExistenceIsPain();
-        engineCoroutine = CheckEngine();
+        pastScore = 0;
     }
     #endregion
 
@@ -45,8 +66,8 @@ public class Agent : MonoBehaviour {
         carScript.WallCollisionEvent += DestroyCar;
 
         // Begin timer for existence
-        StartCoroutine(existenceCoroutine);
-        StartCoroutine(engineCoroutine);
+        InvokeRepeating("PunishSlowCars", UnityEngine.Random.Range(200, 301) / 100f, 5f);
+        InvokeRepeating("CheckEngine", UnityEngine.Random.Range(100, 200) / 100f, 2.5f);
     }
 
     private void FixedUpdate() {
@@ -64,52 +85,54 @@ public class Agent : MonoBehaviour {
 
     // Unsubscribe from events and stop running coroutines
     private void OnDisable() {
-        StopCoroutine(existenceCoroutine);
-        StopCoroutine(engineCoroutine);
+        CancelInvoke();
         carScript.WallCollisionEvent -= DestroyCar;
     }
     #endregion
 
     #region WaitForEvent
     public void DestroyCar() {
-        agentManager.AgentDeath();
+        // The same car can call Destroy Car multiple times
+        if (!isAlive)
+            return;
+
         score = carScript.GetScore();
         Destroy(car);
         car = null;
         isAlive = false;
+        agentManager.AgentDeath();
     }
     #endregion
 
-    #region Coroutines
+    #region Repeatedly Invoked Functions
     // Punish cars for existing to select faster cars
-    private IEnumerator ExistenceIsPain() {
-        while (isAlive) {
-            yield return new WaitForSeconds(10.0f);
+    private void PunishSlowCars() {
+        if (isAlive)
             carScript.DecrementScore();
-        }
     }
 
     // Destroy cars that stall to speed up generations
-    private IEnumerator CheckEngine() {
-        while (isAlive) {
-            yield return new WaitForSeconds(5.0f);
-            if (carScript == null) continue;
+    private void CheckEngine() {
+        if (isAlive)
+        {
             int currentScore = carScript.GetScore();
-            if (paralyzed >= currentScore)
+            if (paralyzed > 2)
                 carScript.FakeCollision();
-            else
-                paralyzed = currentScore;
+            else if (currentScore <= pastScore)
+                paralyzed++;
+
+            pastScore = currentScore;
         }
     }
     #endregion
 
     #region Utility Functions
-    //Returns the string version of this Agent's Neural Network
+    // Returns the string version of this Agent's Neural Network
     public string GetNNString() {
         return brain.ToString();
     }
 
-    //Returns a new copy of the gameObject this Agent Script is attached to
+    // Returns a new copy of the gameObject this Agent Script is attached to
     public Agent DeepCopy(GameObject agentPrefab) {
         GameObject NewAgent = Instantiate(agentPrefab);
         Agent NewAgentScript = NewAgent.GetComponent<Agent>();
@@ -128,6 +151,11 @@ public class Agent : MonoBehaviour {
     // Get the score of the car this Agent is tracking
     public int GetCarScore() {
         return this.carScript.GetScore();
+    }
+
+    // Pings event in the CarDriving script
+    public void CrashCar() {
+        this.carScript.FakeCollision();
     }
     #endregion
 }

@@ -4,15 +4,13 @@ using System;
 using System.Text;
 using System.IO;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SocialPlatforms.Impl;
 
 public class AgentManager : MonoBehaviour
 {
     #region Private Variables
     [Header("Import/Export Settings")]
-
-    [SerializeField]
-    [Tooltip("Would you like to import Neural Networks from a file?")]
-    private bool importNetworks = false;
 
     [SerializeField]
     [Tooltip("Name of file from which to import Neural Networks")]
@@ -31,11 +29,6 @@ public class AgentManager : MonoBehaviour
     [Range(3, 50)]
     private int carsPerGeneration;
     public int CarsPerGeneration { get { return carsPerGeneration; } private set { carsPerGeneration = value;  } }
-
-    [SerializeField]
-    [Tooltip("The number of cars passing their AI to the next generation")]
-    [Range(1, 5)]
-    private int parentsPerGeneration;
 
     [SerializeField]
     [Tooltip("Input the size of each neural network layer (First layer MUST match number of sensors)")]
@@ -58,35 +51,59 @@ public class AgentManager : MonoBehaviour
 
     private System.Random random;
 
-    private Agent[] agentList;  
+    // Array of Agents used in this generation
+    private Agent[] agentList;
+
+    // Number of remaining agents for the generation
     private int numAliveAgents;
+
+    // Index of Agent with the highest score of those alive
     private int leadAgent = 0;
 
+    // Array of top parentsPerGeneration Agents in sorted order after simulation ends
     private Agent[] parents;
     public Agent[] Parents { get { return parents; } }
+
+    // List of Agents used for sorting
     private List<Agent> parentsList;
 
+    // Number of parents passed to Evolution Manager
+    private int parentsPerGeneration = 10;
+
+    // Variables for moving the camera
     private CameraTracking cameraTracker;
     private IEnumerator cameraCoroutine;
+
+    [Header("UI Elements")]
+
+    [SerializeField]
+    [Tooltip("Best score text element")]
+    private Text scoreText;
+
+    [SerializeField]
+    [Tooltip("Num agents alive text element")]
+    private Text agentsAliveText;
+
+    private bool canTerminateButton = false;
     #endregion
 
     #region Public Variables
+    // Event subscription to determine if simulation has ended
     public delegate void SimulationConcluded();
     public event SimulationConcluded SimulationEndedEvent;
     #endregion
 
     #region StartUp
-    //Initialization of the Agent Manager, which oversees each agent
+    // Initialization of the Agent Manager, which oversees each agent
     private void Start() {
-        //Create a random number generator
+        // Create a random number generator
         random = new System.Random();
 
-        //Create the list of agents
+        // Create the list of agents
         agentList = new Agent[carsPerGeneration];
 
-        //Set up main camera
+        // Set up main camera
         cameraTracker = Camera.main.transform.GetComponent<CameraTracking>();
-        cameraCoroutine = UpdateCamera();
 
         // Check if filename is valid
         if (exportFile.Contains("/"))
@@ -94,13 +111,13 @@ public class AgentManager : MonoBehaviour
 
         // Check if number of sensors is the same as the first layer of the layer sizes.
         if (layerSizes[0] != carPrefab.GetComponent<CarDriving>().NumSensors) {
-            Debug.Log("Number of nodes in first layer: " + layerSizes[0]);
+            Debug.Log("Number of sensors on car does not match expected inputs for neural network. Change first element of layer sizes to " + carPrefab.GetComponent<CarDriving>().NumSensors); ;
             throw new System.Exception("Number of sensors does not match first layer.");
         }
 
-        //Instantiate agents and assign their relevant data fields
+        // Instantiate agents and assign their relevant data fields
         NeuralNetwork[] networks = new NeuralNetwork[carsPerGeneration];
-        if (importNetworks) {
+        if (importFile != "") {
             int agentsCreated = ReadNeuralNetwork(networks);
             if (agentsCreated < carsPerGeneration)
                 FillAgents(agentsCreated, networks);
@@ -152,11 +169,13 @@ public class AgentManager : MonoBehaviour
 
     #region Public Functions
     // Adjusts the number of living agents when an agent dies
-    // Also begins sorting of Agents when 
+    // Also begins sorting of Agents when all Agents are dead
     public void AgentDeath() {
         numAliveAgents--;
+        agentsAliveText.text = numAliveAgents.ToString();
 
         if (numAliveAgents <= 0) {
+            canTerminateButton = false;
             StartCoroutine(GradeAgents());
             StopCoroutine(cameraCoroutine);
         }
@@ -172,17 +191,42 @@ public class AgentManager : MonoBehaviour
             agentScript.Creation(networks[i], carPrefab, this);
             agentScript.Begin();
         }
+        agentsAliveText.text = agentList.Length.ToString();
         numAliveAgents = agentList.Length;
+        cameraCoroutine = UpdateCamera();
+        scoreText.text = "0";
         StartCoroutine(cameraCoroutine);
+        Invoke("EnableTerminateButton", 2.0f);
     }
 
     // Destory all remaining agents and the cars they track
     public void DestroyAgents() {
         for (int i = 0; i < agentList.Length; i++)
             Destroy(agentList[i].gameObject);
-        
-        foreach (GameObject zombieCar in GameObject.FindGameObjectsWithTag("Car"))
+
+        int zombieCounter = 0;
+        foreach (GameObject zombieCar in GameObject.FindGameObjectsWithTag("Car")) {
             Destroy(zombieCar);
+            zombieCounter++;
+        }
+        if (zombieCounter != 0) Debug.Log(zombieCounter + " zombies found!");
+    }
+
+    // End the generation by destroying any remaining cars
+    public void TerminateGeneration() {
+        if (!canTerminateButton) {
+            Debug.Log("Can't terminate generation yet. Try again in a few seconds.");
+            return;
+        }
+
+        if (agentList == null || agentList.Length == 0) {
+            Debug.Log("There is no generation to terminate");
+            return;
+        }
+
+        for (int i = 0; i < agentList.Length; i++)
+            if (agentList[i].IsAlive)
+                agentList[i].CrashCar();
     }
     #endregion
 
@@ -268,30 +312,32 @@ public class AgentManager : MonoBehaviour
     private int CompareScore(Agent a1, Agent a2) {
         return a2.Score.CompareTo(a1.Score);
     }
+
+    private void EnableTerminateButton() {
+        canTerminateButton = true;
+    }
     #endregion
 
     #region Coroutines
     // Update the camera to follow the highest scoring alive car
     private IEnumerator UpdateCamera() {
-        while (true)
-        {
-            if (!agentList[leadAgent].IsAlive)
-                for (int i = 0; i < agentList.Length; i++)
-                    if (agentList[i].IsAlive)
-                    {
-                        leadAgent = i;
-                        break;
-                    }
+        while (true) {
+            yield return new WaitForSeconds(0.5f);
 
-            yield return new WaitForSeconds(1f);
-            for (int i = 1; i < agentList.Length; i++) {
+            leadAgent = -1;
+            int bestScore = -1;
+
+            for (int i = 0; i < agentList.Length; i++) {
                 if (!agentList[i].IsAlive) continue;
-                if (agentList[i].GetCarScore() > agentList[leadAgent].GetCarScore())
+                if (agentList[i].GetCarScore() > bestScore) {
                     leadAgent = i;
+                    bestScore = agentList[i].GetCarScore();
+                }
             }
 
-            if (agentList[leadAgent].IsAlive)
-                cameraTracker.SetTarget(agentList[leadAgent].GetCarTransform());
+            if (leadAgent == -1) continue;
+            cameraTracker.SetTarget(agentList[leadAgent].GetCarTransform());
+            scoreText.text = bestScore.ToString();
         }
     }
     #endregion

@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CreateTrack : MonoBehaviour
-{
+public class CreateTrack : MonoBehaviour {
     #region Variables
     // Start and End Pieces
+    [SerializeField]
+    [Tooltip("True creates a  new track. False assumes a track is already made.")]
+    private bool createNewTrack = true;
+
     [SerializeField]
     [Tooltip("Starting piece Prefab")]
     private TrackPiece start;
@@ -46,10 +49,12 @@ public class CreateTrack : MonoBehaviour
 
     #region Start
     private void Start() {
+        creationSuccessful = !createNewTrack;
+        if (creationSuccessful)
+            return;
+
         // Check that valid pieces are provided
         CheckPieces();
-
-        creationSuccessful = false;
 
         // Begin Track Creation
         StartCoroutine("Create");
@@ -122,8 +127,7 @@ public class CreateTrack : MonoBehaviour
     }
 
     // Creates the Track and Checks for intersections. Destroys the track and repeats if intersection found
-    private IEnumerator Create()
-    {
+    private IEnumerator Create() {
         if (trackSize == 0) {
             StartCreation();
             foreach (GameObject piece in track)

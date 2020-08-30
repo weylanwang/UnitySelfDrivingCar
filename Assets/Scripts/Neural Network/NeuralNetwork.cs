@@ -2,33 +2,34 @@
 
 public class NeuralNetwork {
     #region Variables
-    //The individual neural layers which form the neural network
+    // The individual neural layers which form the neural network
     private NeuralLayer[] layers;
     public NeuralLayer[] Layers { get { return layers; } }
     #endregion
 
     #region Constructors
+
     public NeuralNetwork(NeuralLayer[] layers) {
         this.layers = new NeuralLayer[layers.Length];
         for (int i = 0; i < layers.Length; i++)
             this.layers[i] = layers[i].DeepCopy();
     }
 
-    //The constructor for a neural network with random weights given the dimensions
+    // The constructor for a neural network with random weights given the dimensions
     public NeuralNetwork(uint[] sizes, Int32 seed) {
         layers = new NeuralLayer[sizes.Length - 1];
         for (int i = 0; i < layers.Length; i++)
             layers[i] = new NeuralLayer(sizes[i + 1], sizes[i], seed, false);
     }
 
-    //The constructor for a neural network given a string representation of each layer
+    // The constructor for a neural network given a string representation of each layer
     public NeuralNetwork(string network) {
-        //String representation of neural network:
-        //Line 0 = Number of neural layers
-        //Line 2......n: Descriptions of the neural layers
-        //First line of singular neural layer: x, y representing the dimensions of the weight matrix
-        //Next x lines: the y values per line representing individual weights to a singular neuron
-        //Repeat the two above lines until termination of neural network
+        // String representation of neural network:
+        // Line 0 = Number of neural layers
+        // Line 2......n: Descriptions of the neural layers
+        // First line of singular neural layer: x, y representing the dimensions of the weight matrix
+        // Next x lines: the y values per line representing individual weights to a singular neuron
+        // Repeat the two above lines until termination of neural network
 
         // For example
         // 2  <--- the number of layers in this neural network
@@ -38,28 +39,28 @@ public class NeuralNetwork {
         // 1,2  <--- the dimensions of layer two
         // 2,3  <--- the weights of the first neuron set
 
-        //Variable for tracking which layer we're creating
+        // Variable for tracking which layer we're creating
         uint layerCounter = 0;
 
-        //Variable for building the string representation of a single neural layer
+        // Variable for building the string representation of a single neural layer
         string layerString = "";
 
-        //Variables for tracking dimensions of each neural layer
+        // Variables for tracking dimensions of each neural layer
         uint numRows = 0;
         uint numCols = 0;
 
-        //Index for tracking position within a layer
-        int layerIndex = 0; //0 means we're looking at the size of the weight matrix
+        // Index for tracking position within a layer
+        int layerIndex = 0; // 0 means we're looking at the size of the weight matrix
 
         bool firstline = true;
 
-        //At index 0, note the dimensions of the current neural layerIndex
-        //For the next numRows lines, create the string representation of a neural layerIndex
-        //Once done layer creation, add the layer to the neural network
+        // At index 0, note the dimensions of the current neural layerIndex
+        // For the next numRows lines, create the string representation of a neural layerIndex
+        // Once done layer creation, add the layer to the neural network
         foreach (string line in network.Trim().Split('\n')) {
             if (firstline) {
                 firstline = false;
-                //Trims the first value of the string and uses it as the network size
+                // Trims the first value of the string and uses it as the network size
                 uint size = StringToUInt(line);
                 layers = new NeuralLayer[size];
                 continue;
@@ -68,11 +69,6 @@ public class NeuralNetwork {
                 string[] dimensions = line.Trim().Split(',');
                 numRows = StringToUInt(dimensions[0]);
                 numCols = StringToUInt(dimensions[1]);
-
-                //if (inputs == 0)
-                //    inputs = numCols - 1;
-                //outputs = numRows;
-
                 layerString = "";
                 layerIndex++;
                 continue;
@@ -90,7 +86,7 @@ public class NeuralNetwork {
     #endregion
 
     #region Neural Network Functionality
-    //Returns an output vector from the neural network given an input vector
+    // Returns an output vector from the neural network given an input vector
     public float[] NetworkProcessing(float[] inputs) {
         float[] output = inputs;
         foreach (NeuralLayer layer in layers)
@@ -100,8 +96,9 @@ public class NeuralNetwork {
     #endregion
 
     #region Utility Functions
+    // A utility function to convert Neural Network into a string representation
     public override string ToString() {
-        //Add layers.Length to beginning of string
+        // Add layers.Length to beginning of string
         string neuralNetwork = layers.Length.ToString() + "\n";
 
         // Add layer dimensions and weights in each layer
@@ -110,12 +107,13 @@ public class NeuralNetwork {
         return neuralNetwork;
     }
 
+    // A utility function to convert string to unsigned int
     public uint StringToUInt(string value) {
         return Convert.ToUInt32(value.Trim());
     }
 
-    public NeuralNetwork DeepCopy()
-    {
+    // A utility function to create a copy of the Neural Network
+    public NeuralNetwork DeepCopy() {
         int layerSize = this.layers.Length;
         NeuralLayer[] newLayers = new NeuralLayer[layerSize];
 

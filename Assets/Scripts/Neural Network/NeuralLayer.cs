@@ -3,24 +3,25 @@ using System.Text;
 
 public class NeuralLayer {
     #region Variables
-    // weight matrix for the neural layer. 
-    // for every weight [i,j], we are encoding the weight from 
-    // this layer's jth node to the ith node in the next layer. 
+    // Weight matrix for the neural layer.
+    // For every weight [i,j], we are encoding the weight from 
+    // This layer's jth node to the ith node in the next layer.
     private float[,] biasedWeights;
     public float BiasedWeights(int i, int j) { return biasedWeights[i, j]; }
 
+    // Create a random variable that randomizes based on the seed
     private static System.Random random;
 
-    // This delegate encodes which activation function we will be using.
+    // This delegate encodes which activation function we will be using
     public delegate float ActivationFunction(float inputValue);
 
-    // Change this to whatever activation function we want to be testing.
+    // Change this to whatever activation function we want to be testing
     public ActivationFunction NeuralActivation = SigmoidFunction;
 
-    // This delegate encodes which randomization function we will be using. 
+    // This delegate encodes which randomization function we will be using 
     public delegate float NewRandomizer(float stdDev);
 
-    // Change this to whatever randomization function we want to be testing.
+    // Change this to whatever randomization function we want to be testing
     public NewRandomizer CustomRandom = ThreePartsRandom;
     #endregion
    
@@ -28,7 +29,7 @@ public class NeuralLayer {
     // This region contains the different types of constructors available for use
 
     // A constructor to be used when we want to create a random neural, specifying rows, columns,
-    // and whether or not to use the custom randomizer. 
+    // and whether or not to use the custom randomizer 
     public NeuralLayer(uint row, uint col, Int32 seed, bool experimental = false) {
         random = new System.Random(seed);
         biasedWeights = new float[row, col + 1];
@@ -44,8 +45,8 @@ public class NeuralLayer {
         }
     }
 
-    // A constructor to be used when an existing weight matrix already exists.
-    // This constructor assumes biases have already been added and taken care of.
+    // A constructor to be used when an existing weight matrix already exists
+    // This constructor assumes biases have already been added and taken care of
     public NeuralLayer(float[,] initialWeight) {
         random = new System.Random();
         biasedWeights = initialWeight;
@@ -67,9 +68,9 @@ public class NeuralLayer {
     #region Math Functions
     // This region contains the various math functions necessary for the neural layer
 
-    // This function multiplies a matrix by a single column vector.
+    // This function multiplies a matrix by a single column vector
     private float[] MatrixVectorMultiplication(float[,] matrix, float[] vector) {
-        //first argument is the rows, second argument is columns
+        // first argument is the rows, second argument is columns
         if (matrix == null || vector == null) {
             throw new ArgumentException("Inputs cannot be null. Currently matrix = " + matrix + " and vector = " + vector);
         }
@@ -121,7 +122,7 @@ public class NeuralLayer {
         float[] biasedInputs = InputBiased(inputs);
         float[] results = MatrixVectorMultiplication(biasedWeights, biasedInputs);
         for (int i = 0; i < results.Length; i++) {
-            //We multiply by 2 and subtract by 1 since activation functions return between 0 and 1
+            // We multiply by 2 and subtract by 1 since activation functions return between 0 and 1
             results[i] = (NeuralActivation(results[i]))*2 - 1;
         }
         return results;
@@ -162,8 +163,7 @@ public class NeuralLayer {
     }
 
     // A utility function to create a copy of this Neural Layer
-    public NeuralLayer DeepCopy()
-    {
+    public NeuralLayer DeepCopy() {
         int rows = biasedWeights.GetLength(0);
         int cols = biasedWeights.GetLength(1);
         float[,] newWeights = new float[rows, cols];
@@ -176,8 +176,7 @@ public class NeuralLayer {
     }
 
     // Return the specified dimension of the biasedWeights
-    public int GetDimensions(int index)
-    {
+    public int GetDimensions(int index) {
         if (index == 0 || index == 1)
             return biasedWeights.GetLength(index);
         return 0;
