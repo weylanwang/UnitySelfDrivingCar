@@ -92,6 +92,12 @@ public class AgentManager : MonoBehaviour
         if (exportFile.Contains("/"))
             throw new System.Exception("Export file cannot have \"/\" character");
 
+        // Check if number of sensors is the same as the first layer of the layer sizes.
+        if (layerSizes[0] != carPrefab.GetComponent<CarDriving>().NumSensors) {
+            Debug.Log("Number of nodes in first layer: " + layerSizes[0]);
+            throw new System.Exception("Number of sensors does not match first layer.");
+        }
+
         //Instantiate agents and assign their relevant data fields
         NeuralNetwork[] networks = new NeuralNetwork[carsPerGeneration];
         if (importNetworks) {
