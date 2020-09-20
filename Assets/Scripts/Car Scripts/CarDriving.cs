@@ -28,20 +28,23 @@ public class CarDriving : MonoBehaviour {
     #endregion
 
     #region Public Variables
+    // Contains the event to destroy the car when it collides with a wall
     public delegate void WallCollision();
     public event WallCollision WallCollisionEvent;
     #endregion
 
     #region Private variables
+    // Horizontal axis input
     private float horizontalAxis;
+    // Vertical axis input
     private float verticalAxis;
     private float velocity;
     public float Velocity { get { return velocity; } }
     private float rotation;
     private Rigidbody2D carRB;
     private int score;
-    private int delinquency;
     private int lastCheckpoint;
+    private Vector3 trackPiecePosition;
     private float[] sensorReadings;
 
     public CarSensors[] sensors;
@@ -50,11 +53,11 @@ public class CarDriving : MonoBehaviour {
     #endregion
 
     #region Start/Update
-    //Set up scoring, backtrack checking, and references to sensors
+    // Set up scoring, backtrack checking, and references to sensors
     private void Start() {
         score = 0;
         lastCheckpoint = 0;
-        delinquency = 0;
+        trackPiecePosition = Vector3.zero;
         velocity = 0;
         carRB = GetComponent<Rigidbody2D>();
         sensorReadings = new float[numSensors];
@@ -65,7 +68,7 @@ public class CarDriving : MonoBehaviour {
         }
     }
 
-    //Apply controls (whether they're manual or AI driven) every physics frame
+    // Apply controls (whether they're manual or AI driven) every physics frame
     void FixedUpdate() {
         if (!AIControlled) {
             horizontalAxis = Input.GetAxis("Horizontal");
@@ -77,28 +80,28 @@ public class CarDriving : MonoBehaviour {
 
     #region Car Control Functions
     private void ApplyControls() {
-        //Speed up car per the engine's power
+        // Speed up car per the engine's power
         velocity = verticalAxis * enginePower;
 
-        //Calculate the rotational force of the car
+        // Calculate the rotational force of the car
         rotation = Mathf.Sign(Vector2.Dot(carRB.velocity, carRB.GetRelativeVector(Vector2.up)));
 
-        //Application of the vertical and horizontal forces
+        // Application of the vertical and horizontal forces
         carRB.rotation += (-horizontalAxis) * turningPower * carRB.velocity.magnitude * rotation;
         carRB.AddRelativeForce(Vector2.up * velocity);
 
-        //Small drift effect to make the car feel more realistic
+        // Small drift effect to make the car feel more realistic
         carRB.AddRelativeForce(-Vector2.right * carRB.velocity.magnitude * (-horizontalAxis / 2));
     }
 
-    //Set the car's inputs if driven by AI. Values should be between -1 and 1
+    // Set the car's inputs if driven by AI. Values should be between -1 and 1
     public void SetCarInputs(float[] inputs) {
         horizontalAxis = inputs[0];
         verticalAxis = inputs[1];
         verticalAxis = inputs[1];
     }
 
-    //Gets the data from each sensor (how far the line went before detecting an object)
+    // Gets the data from each sensor (how far the line went before detecting an object)
     public float[] GetSensorReadings() {
         for (int i = 0; i < numSensors; i++) {
             sensorReadings[i] = sensors[i].GetSensorReading();
@@ -106,43 +109,48 @@ public class CarDriving : MonoBehaviour {
         return sensorReadings;
     }
 
-    //Trigger the wall collision event whenever a wall has been collided into
+    // Trigger the wall collision event whenever a wall has been collided into
     private void OnCollisionEnter2D(Collision2D collision) {
         WallCollisionEvent();
     }
     #endregion
 
     #region Scoring
+    // Returns the score of the car
     public int GetScore() {
         return score;
     }
 
+    // Decreases the score of the car
     public void DecrementScore() {
-        if (score <= 0)
-            score = 0;
-        else
+        if (score > 0)
             score--;
     }
 
-    public void SetLastCheckpoint(int checkpoint)
-    {
+    // Tracks the last checkpoint the car has passed
+    public void SetLastCheckpoint(int checkpoint, Vector3 newPosition) {
         int difference = checkpoint - lastCheckpoint;
-        if (difference == 1 || difference <= -3) {
+        if (difference >= 1 && difference <= 2)
             score++;
-            delinquency = 0;
-        }
-        else if (difference != 0) {
-            score -= 2^delinquency;
-            delinquency++;
-            if (score < 0) score = 0;
-        }
+        else if (difference <= -2 && trackPiecePosition != newPosition)
+            score++;
+
+        trackPiecePosition = newPosition;
         lastCheckpoint = checkpoint;
     }
 
+    // Returns the last checkpoint the car has passed
     public int GetLastCheckpoint() {
         return lastCheckpoint;
     }
+
+    // Awards points to the car when the car has hit the finish line
+    public void AwardPoints(int points) {
+        if (points > 0)
+            score += points;
+    }
     
+    // Calls the event to destroy a car when it's not moving or wiggling
     public void FakeCollision() {
         Collision2D collision = null;
         OnCollisionEnter2D(collision);

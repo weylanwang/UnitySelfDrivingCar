@@ -19,8 +19,7 @@ public class CarSensors : MonoBehaviour
         shootableMask = LayerMask.GetMask("Wall");
     }
 
-    private void Update()
-    {
+    private void Update() {
         sensorLine.SetPosition(0, transform.position);
         sensorLine.SetPosition(1, transform.position + transform.up * range);
         RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.up, range, shootableMask);

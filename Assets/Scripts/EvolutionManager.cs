@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.SocialPlatforms.Impl;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(AgentManager))]
 public class EvolutionManager : MonoBehaviour {
@@ -13,7 +15,7 @@ public class EvolutionManager : MonoBehaviour {
     [Tooltip("The total number of generations for the program to run")]
     [Range(1, 30)]
     private uint totalGenerations;
-    private uint currentGeneration;
+    private static uint currentGeneration;
 
     [SerializeField]
     [Tooltip("Best2/Best2Alt: The probability a child chooses the better parent's weight. In BestAlt2, it reduces variety.")]
@@ -22,13 +24,19 @@ public class EvolutionManager : MonoBehaviour {
     private static float staticRecombinationChance;
 
     [SerializeField]
+    [Tooltip("Roulette Wheel: The number of cars passing their AI to the next generation")]
+    [Range(2, 10)]
+    private int parentsPerGeneration;
+    private static int staticParentsPerGeneration;
+
+    [SerializeField]
     [Tooltip("The probability a child's weight mutates.")]
-    [Range(0,1)]
+    [Range(0, 1)]
     private float mutationChance;
     private static float staticMutationChance;
 
     [SerializeField]
-    [Tooltip("NamMutation: Defines the boundaries for the limits of mutation.")]
+    [Tooltip("One: Defines the boundaries for the limits of mutation.")]
     private float mutationAmount;
     private static float staticMutationAmount;
 
@@ -38,13 +46,22 @@ public class EvolutionManager : MonoBehaviour {
     private static Agent[] parentsList;
     private static NeuralNetwork[] newGeneration;
     private static System.Random random;
+
+    [Header("UI Elements")]
+
+    [SerializeField]
+    [Tooltip("Generation Number Text")]
+    private Text generationText;
     #endregion
 
     #region Delegates
+    // This delegate encodes which recombination method we want to use
     public delegate void RecombinationFunction();
+    public static RecombinationFunction Recombine = BestTwo;
+
+    // This delegate encodes which mutation method we want to use
     public delegate float[,] MutationFunction(float[,] weights);
-    public static RecombinationFunction Recombine = TruncatedRouletteWheel;
-    public static MutationFunction Mutate = NamMutation;
+    public static MutationFunction Mutate = MutationOne;
 
     public delegate void CreationConcluded();
     public event CreationConcluded generationCreatedEvent;
@@ -60,9 +77,9 @@ public class EvolutionManager : MonoBehaviour {
      * Stocastic Recombination - An attempt to use stochastic sampling for recombination rather than sampling
      * 
      * Mutation:
-     * Nam Mutation - According to a set chance, a weight may be randomly reassigned to a value within range
-     * Wey Mutation - According to set chances, a weight may increase or decrease within two ranges, one larger than the other
-     * Dan Mutation - According to a set chance, a weight may increase or decrease by a value within range
+     * MutationOne - According to a set chance, a weight may be randomly reassigned to a value within range
+     * MutationTwo - According to set chances, a weight may increase or decrease within two ranges, one larger than the other
+     * MutationThree - According to a set chance, a weight may increase or decrease by a value within range
      * */
     #endregion
 
@@ -78,6 +95,7 @@ public class EvolutionManager : MonoBehaviour {
         staticRecombinationChance = recombinationChance;
         staticMutationChance = mutationChance;
         staticMutationAmount = mutationAmount;
+        staticParentsPerGeneration = parentsPerGeneration;
         currentGeneration = 0;
     }
     #endregion
@@ -95,6 +113,7 @@ public class EvolutionManager : MonoBehaviour {
 
         // Print current generation
         Debug.Log("Starting Generation " + (currentGeneration + 1));
+        generationText.text = (currentGeneration + 1).ToString();
 
         parentsList = agentManager.Parents;
 
@@ -107,6 +126,7 @@ public class EvolutionManager : MonoBehaviour {
 
         // Begin Simulation of next generation
         agentManager.StartSimulation(newGeneration);
+
     }
     #endregion
 
@@ -158,7 +178,7 @@ public class EvolutionManager : MonoBehaviour {
     }
 
     // Best Two Alt - Creates children in pairs. A parent's weight is randomly assigned
-    // to a child while the other child gets the remaining parent's weight.
+    // to a child while the other child gets the remaining parent's weight
     // Therefore a smaller recombination chance will split the new generation into 2 groups,
     // with each group resembling one of the parents very closely
     private static void BestTwoAlternative() {
@@ -212,7 +232,11 @@ public class EvolutionManager : MonoBehaviour {
     // Truncated Roulette Wheel - A child randomly takes the weight from a pool of parentsPerGeneration parents,
     // but the probability of inheritance is proportional to the parent's score
     private static void TruncatedRouletteWheel() {
-        //Truncation is done in agent manager
+        // Truncation is done in agent manager
+
+        // Check if parentsPerGeneration is greater than 2
+        if (staticParentsPerGeneration < 2)
+            throw new System.Exception("ParentsPerGeneration is less than 2!");
 
         CarryOverBest2();
 
@@ -231,7 +255,7 @@ public class EvolutionManager : MonoBehaviour {
 
         for (int i = 0; i < layerSizes.Length - 1; i++) {
             float[,] tempWeights = new float[layerSizes[i + 1], layerSizes[i] + 1];
-            for (int j = 0; j < layerSizes[i + 1]; j++) 
+            for (int j = 0; j < layerSizes[i + 1]; j++)
                 for (int k = 0; k < layerSizes[i] + 1; k++)
                     for (int l = 0; l < parentsList.Length; l++) {
                         double indexValue = random.NextDouble() * totalScore;
@@ -242,7 +266,7 @@ public class EvolutionManager : MonoBehaviour {
                             break;
                         }
                     }
-                
+
             tempWeights = Mutate(tempWeights);
             tempLayers[i] = new NeuralLayer(tempWeights);
         }
@@ -266,11 +290,11 @@ public class EvolutionManager : MonoBehaviour {
         int totalScore = 0;
         int[] chances = new int[parentsList.Length];
 
-        for (int i = 0; i < parentsList.Length; i++) 
+        for (int i = 0; i < parentsList.Length; i++)
             totalScore += parentsList[i].Score;
-     
-        for (int i = 0; i < parentsList.Length; i++) 
-            chances[i] = Mathf.RoundToInt(parentsList[i].Score/totalScore * 100);
+
+        for (int i = 0; i < parentsList.Length; i++)
+            chances[i] = Mathf.RoundToInt(parentsList[i].Score / totalScore * 100);
 
         Array.Reverse(chances);
 
@@ -299,8 +323,8 @@ public class EvolutionManager : MonoBehaviour {
 
     #region Mutation Methods
 
-    // Nam Mutation - According to a set chance, a weight may be randomly reassigned to a value within range
-    private static float[,] NamMutation(float[,] weights) {
+    // According to a set chance, a weight may be randomly reassigned to a value within range
+    private static float[,] MutationOne(float[,] weights) {
         for (int j = 0; j < weights.GetLength(0); j++) {
             for (int k = 0; k < weights.GetLength(1); k++) {
                 if (UnityEngine.Random.value < staticMutationChance) {
@@ -311,30 +335,29 @@ public class EvolutionManager : MonoBehaviour {
         return weights;
     }
 
-    // Wey Mutation - According to set chances, a weight may increase or decrease within two ranges, one larger than the other
-    private static float[,] WeyMutation(float[,] weights) {
+    // According to set chances, a weight may increase or decrease within two ranges, one larger than the other
+    private static float[,] MutationTwo(float[,] weights) {
         float runningMax = 0;
         float runningMin = 0;
         float extremeMutateChance = 0.05f;
         float mutationPercentage = 0.3f;
 
         for (int i = 0; i < weights.GetLength(0); i++) {
-            for (int j = 0; j < weights.GetLength(1); j++)
-            {
-                //This block keeps track of running min/max
+            for (int j = 0; j < weights.GetLength(1); j++) {
+                // This block keeps track of running min/max
                 if (weights[i, j] > runningMax) runningMax = weights[i, j];
                 else if (weights[i, j] < runningMin) runningMin = weights[i, j];
 
-                //Mutate
+                // Mutate
                 if (UnityEngine.Random.value < staticMutationChance) {
-                    //Percentage based mutation
+                    // Percentage based mutation
                     if (UnityEngine.Random.value > extremeMutateChance) {
                         if (UnityEngine.Random.value > 0.5f)
                             weights[i, j] *= (1 + (UnityEngine.Random.Range(0f, mutationPercentage)));
                         else
                             weights[i, j] *= (1 - (UnityEngine.Random.Range(0f, mutationPercentage)));
                     }
-                    //Extreme Mutation based on min/max
+                    // Extreme Mutation based on min/max
                     else
                         weights[i, j] = UnityEngine.Random.Range(runningMin, runningMax);
                 }
@@ -343,8 +366,8 @@ public class EvolutionManager : MonoBehaviour {
         return weights;
     }
 
-    // Dan Mutation - According to a set chance, a weight may increase or decrease by a value within range
-    private static float[,] DanMutation(float[,] weights) {
+    // According to a set chance, a weight may increase or decrease by a value within range
+    private static float[,] MutationThree(float[,] weights) {
         // Mutate values according to average for that layer
         int col = weights.GetLength(1);
         float mutationAmount = 1f / col;

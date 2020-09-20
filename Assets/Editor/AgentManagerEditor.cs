@@ -12,6 +12,10 @@ public class AgentManagerEditor : Editor
             agentManager.PrintNeuralNetworks();
         }
 
+        if (GUILayout.Button("Terminate Generation")) {
+            agentManager.TerminateGeneration();
+        }
+
         EditorGUILayout.Space();
         base.OnInspectorGUI();
     }
