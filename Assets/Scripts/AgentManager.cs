@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System;
-using System.Text;
 using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
@@ -20,7 +19,8 @@ public class AgentManager : MonoBehaviour
     [SerializeField]
     [Tooltip("Name of the file to which to export Neural Networks")]
     [TextArea(1,2)]
-    private string exportFile;
+    private string exportFile = "";
+    private bool overrideExportPath = false;
 
     [Header("Simulation Settings")]
 
@@ -106,7 +106,7 @@ public class AgentManager : MonoBehaviour
         cameraTracker = Camera.main.transform.GetComponent<CameraTracking>();
 
         // Check if filename is valid
-        if (exportFile.Contains("/"))
+        if (!overrideExportPath && exportFile.Contains("/"))
             throw new System.Exception("Export file cannot have \"/\" character");
 
         // Check if number of sensors is the same as the first layer of the layer sizes.
@@ -127,6 +127,29 @@ public class AgentManager : MonoBehaviour
                 networks[i] = new NeuralNetwork(layerSizes, random.Next());
 
         StartCoroutine(AwaitTrackCompletion(networks));
+    }
+
+    // Initialization of Values
+    // Called before Start by CreateProject
+    public void Initialize(string importFile, int carsPerGeneration, int layerTemplate, GameObject carPrefab,
+        GameObject agentPrefab, GameObject trackMaker, Text scoreText, Text agentsAlive)
+    {
+        this.importFile = importFile;
+        this.carsPerGeneration = carsPerGeneration;
+        this.parentsPerGeneration = 10;
+        if (layerTemplate == 0)
+            layerSizes = new uint[4] { 6, 4, 3, 2 };
+        else if (layerTemplate == 2)
+            layerSizes = new uint[4] { 10, 6, 3, 2 };
+        else
+            layerSizes = new uint[4] { 8, 6, 4, 2 };
+        this.carPrefab = carPrefab;
+        this.agentPrefab = agentPrefab;
+        this.TrackMaker = trackMaker;
+        this.scoreText = scoreText;
+        this.agentsAliveText = agentsAlive;
+        this.overrideExportPath = true;
+        this.exportFile = "Assets/Resources/saveFile.txt";
     }
     #endregion
 
@@ -236,24 +259,37 @@ public class AgentManager : MonoBehaviour
         if (parentsList == null || parentsList.Count == 0) {
             Debug.Log("There are no networks to print");
             return;
-        }    
+        }
 
-        string directoryPath = "Assets/Results/" + System.DateTime.Today.ToString("d").Replace("/","-");
-        System.IO.Directory.CreateDirectory(directoryPath);
+        string path;
+        if (overrideExportPath)
+            path = exportFile;
+        else
+        {
+            string directoryPath = "Assets/Results/" + System.DateTime.Today.ToString("d").Replace("/", "-");
+            System.IO.Directory.CreateDirectory(directoryPath);
 
-        if (exportFile == "")
-            exportFile = System.DateTime.Now.ToString("HHmm") + ".txt";
-        else if (exportFile.Substring(exportFile.Length - 4) != ".txt")
-            exportFile += ".txt";
+            if (exportFile == "")
+                exportFile = System.DateTime.Now.ToString("HHmm") + ".txt";
+            else if (exportFile.Substring(exportFile.Length - 4) != ".txt")
+                exportFile += ".txt";
 
-        string path = directoryPath + "/" + exportFile;
+            path = directoryPath + "/" + exportFile;
+        }
         StreamWriter sw;
         using (sw = File.CreateText(path)) {
             for (int i = 0; i < parentsList.Count; i++)
                 sw.WriteLine(parentsList[i].GetNNString());
         }
         sw.Close();
-        Debug.Log("Results printed to file " + directoryPath + "/" + exportFile);
+        //Debug.Log("Results printed to file " + directoryPath + "/" + exportFile);
+
+        // Print prefsFile to save preferences for the save file
+        using (sw = File.CreateText("Assets/Resources/prefsFile.txt"))
+        {
+            sw.WriteLine(ScreenManager.GetPrefsTxt());
+        }
+        sw.Close();
     }
 
     // Convert a text file into Neural Networks
@@ -342,8 +378,8 @@ public class AgentManager : MonoBehaviour
     }
     #endregion
 
-    #region OnDisable
-    private void OnDisable() {
+    #region OnDestroy
+    private void OnDestroy() {
         StopCoroutine(cameraCoroutine);
     }
     #endregion

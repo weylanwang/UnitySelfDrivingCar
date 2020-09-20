@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3815008900724581580
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3815008900724581570}
+  - component: {fileID: 3815008900724581571}
+  - component: {fileID: 3815008900724581569}
+  m_Layer: 0
+  m_Name: Management
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3815008900724581570
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3815008900724581580}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3815008900724581571
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3815008900724581580}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1eb296fe55a7ad444ad9ac35440128b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  importFile: 
+  exportFile: 
+  carsPerGeneration: 30
+  layerSizes: 06000000040000000300000002000000
+  carPrefab: {fileID: 4827311204441756465, guid: 43161327f7a0c46e6a9df3a85b169859,
+    type: 3}
+  agentPrefab: {fileID: 4923977266068079471, guid: ac0d4e70517c8fe4fb609177b86f8a30,
+    type: 3}
+  TrackMaker: {fileID: 0}
+  scoreText: {fileID: 0}
+  agentsAliveText: {fileID: 0}
+--- !u!114 &3815008900724581569
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3815008900724581580}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bac8d7b22152a42c6bc59353c1c1ddce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  totalGenerations: 30
+  recombinationChance: 0.1
+  parentsPerGeneration: 2
+  mutationChance: 0.75
+  mutationAmount: 3
+  generationText: {fileID: 0}

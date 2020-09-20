@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.SocialPlatforms.Impl;
@@ -62,9 +60,6 @@ public class EvolutionManager : MonoBehaviour {
     // This delegate encodes which mutation method we want to use
     public delegate float[,] MutationFunction(float[,] weights);
     public static MutationFunction Mutate = MutationOne;
-
-    public delegate void CreationConcluded();
-    public event CreationConcluded generationCreatedEvent;
     #endregion
 
     #region Recomination/Mutation Key
@@ -95,8 +90,28 @@ public class EvolutionManager : MonoBehaviour {
         staticRecombinationChance = recombinationChance;
         staticMutationChance = mutationChance;
         staticMutationAmount = mutationAmount;
-        staticParentsPerGeneration = parentsPerGeneration;
+        //staticParentsPerGeneration = parentsPerGeneration;
+        staticParentsPerGeneration = 5;
         currentGeneration = 0;
+    }
+
+    // Initializes values
+    // Called by CreateProject before Start()
+    public void Initialize(uint genCount, float recombinationChance, float mutationChance, float mutationAmount, string algorithm, Text generationText)
+    {
+        this.totalGenerations = genCount;
+        staticRecombinationChance = recombinationChance;
+        this.recombinationChance = recombinationChance;
+        staticMutationChance = mutationChance;
+        this.mutationChance = mutationChance;
+        staticMutationAmount = mutationAmount;
+        this.mutationAmount = mutationAmount;
+        this.generationText = generationText;
+
+        if (algorithm == "RouletteWheel")
+            Recombine = TruncatedRouletteWheel;
+        else
+            Recombine = BestTwo;
     }
     #endregion
 
@@ -394,8 +409,8 @@ public class EvolutionManager : MonoBehaviour {
     }
     #endregion
 
-    #region OnDisable
-    private void OnDisable() {
+    #region OnDestroy
+    private void OnDestroy() {
         agentManager.SimulationEndedEvent -= CreateNewGeneration;
     }
     #endregion
