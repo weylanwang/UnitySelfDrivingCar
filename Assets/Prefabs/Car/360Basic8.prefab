@@ -478,7 +478,7 @@ GameObject:
   - component: {fileID: 4827311204441756429}
   - component: {fileID: 4827311204441756430}
   m_Layer: 9
-  m_Name: TestCar5
+  m_Name: 360Basic8
   m_TagString: Car
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -586,7 +586,7 @@ MonoBehaviour:
   turningPower: 0.5
   sensorParent: {fileID: 3740357684241249233}
   AIControlled: 1
-  numSensors: 12
+  numSensors: 8
   sensors: []
   agentScript: {fileID: 0}
 --- !u!61 &4827311204441756430

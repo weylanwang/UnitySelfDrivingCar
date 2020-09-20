@@ -43,10 +43,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da5f4f09454bf441dbc4513d91a25130, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  createNewTrack: 1
   start: {fileID: 11400000, guid: 1adba67b61d384eb5b6e03e07e6492d4, type: 2}
   end: {fileID: 11400000, guid: 34410e186cd184ad880280f1332e568e, type: 2}
   trackSize: 30
-  maxAttempts: 20
+  maxAttempts: 200
   useProbability: 1
   trackPieces:
   - {fileID: 11400000, guid: 6796683a312b844d1931929223c5936e, type: 2}
