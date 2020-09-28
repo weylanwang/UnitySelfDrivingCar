@@ -26,10 +26,10 @@ public class CreateProject : MonoBehaviour
     [Header("Car Prefabs")]
     public GameObject manualDrive;
     public GameObject basicCar;
-    public GameObject basicReduced;
     public GameObject basicMinimal;
-    public GameObject basicExtended;
     public GameObject basic360;
+    public GameObject forwardOnly;
+    public GameObject doubleForward;
     public GameObject advanced360;
 
     [Header("UI Elements")]
@@ -175,9 +175,9 @@ public class CreateProject : MonoBehaviour
             case "360Advanced": return advanced360;
             case "360Basic": return basic360;
             case "BasicCar": return basicCar;
-            case "BasicExtended": return basicExtended;
+            case "ForwardOnly": return forwardOnly;
             case "BasicMinimal": return basicMinimal;
-            case "BasicReduced": return basicReduced;
+            case "DoubleForward": return doubleForward;
             default: return manualDrive;
         }
     }
