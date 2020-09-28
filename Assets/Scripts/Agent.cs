@@ -84,7 +84,7 @@ public class Agent : MonoBehaviour {
     }
 
     // Unsubscribe from events and stop running coroutines
-    private void OnDisable() {
+    private void OnDestroy() {
         CancelInvoke();
         carScript.WallCollisionEvent -= DestroyCar;
     }
