@@ -247,13 +247,13 @@ MonoBehaviour:
     type: 3}
   basicCar: {fileID: 4827311204441756465, guid: 43161327f7a0c46e6a9df3a85b169859,
     type: 3}
-  basicReduced: {fileID: 4827311204441756465, guid: 07f84c1e64aaf405cabe671042baa442,
-    type: 3}
   basicMinimal: {fileID: 4827311204441756465, guid: 57713b30c285c47138bb7dd77d2f53c6,
     type: 3}
-  basicExtended: {fileID: 4827311204441756465, guid: 90a5e8dc029fc49b3ac10e75b3482f2f,
-    type: 3}
   basic360: {fileID: 4827311204441756465, guid: f8701dea12e334be296bd8e9a095d6f4,
+    type: 3}
+  forwardOnly: {fileID: 4827311204441756465, guid: 90a5e8dc029fc49b3ac10e75b3482f2f,
+    type: 3}
+  doubleForward: {fileID: 4827311204441756465, guid: 07f84c1e64aaf405cabe671042baa442,
     type: 3}
   advanced360: {fileID: 4827311204441756465, guid: 8ef2cb0139a8a41faba687a8f36ae82b,
     type: 3}
