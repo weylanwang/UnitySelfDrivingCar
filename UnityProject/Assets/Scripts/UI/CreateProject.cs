@@ -61,8 +61,7 @@ public class CreateProject : MonoBehaviour
 
     #region StartUp
     // Start is called before the first frame update
-    void Start()
-    {
+    void Start() {
         // Set enabled to false to prevent Start() from running until we re-enable it
         // onDisable() and onEnable will be called
         management = new GameObject { name = "Management" };
@@ -72,8 +71,8 @@ public class CreateProject : MonoBehaviour
         evolutionManager.enabled = false;
 
         // If the user selected Demo, use default settings and pre-trained car
-        if (PlayerPrefs.GetString("Demo") == "true")
-        {
+        if (PlayerPrefs.GetString("DriveType") == "Demo") {
+            ScreenManager.ResetPrefsToDefault();
             trackMaker = Instantiate(extremePremadeTrack);
             trackMaker.SetActive(false);
 
@@ -86,9 +85,7 @@ public class CreateProject : MonoBehaviour
         string importFile = "";
 
         // If the user selected Import, import the generation from the saveFile and the PlayerPrefs from the prefsFile
-        // Only difficulty and track type can be changed if importing
-        if (PlayerPrefs.GetString("NetworkSource") == "Import")
-        {
+        if (PlayerPrefs.GetString("NetworkSource") == "Import") {
             importFile = saveFile;
             if (!File.Exists(saveFile))
                 File.Create(saveFile).Close();
@@ -135,29 +132,28 @@ public class CreateProject : MonoBehaviour
 
     #region Public Functions
     // Ends the current generation
-    public void TerminateGeneration()
-    {
+    public void TerminateGeneration() {
         agentManager.TerminateGeneration();
     }
 
     // Saves the previous generation
-    public void Save()
-    {
-        agentManager.PrintNeuralNetworks();
+    public void Save() {
+        if (PlayerPrefs.GetString("DriveType") != "ManualDriving") {
+            Debug.Log("Printing Networks");
+            agentManager.PrintNeuralNetworks();
+        }
     }    
 
     // Return to the main menu
     // Does not save a generation before returning
-    public void Quit()
-    {
+    public void Quit() {
         SceneManager.LoadScene(0);
     }
     #endregion
 
     #region Private Functions
     // Start the gameObjects on the same frame
-    private IEnumerator DelayedStart()
-    {
+    private IEnumerator DelayedStart() {
         yield return new WaitForEndOfFrame();
         trackMaker.SetActive(true);
         agentManager.enabled = true;
@@ -165,8 +161,7 @@ public class CreateProject : MonoBehaviour
     }
 
     // Return the correct car prefab
-    private GameObject ChooseCar()
-    {
+    private GameObject ChooseCar() {
         if (PlayerPrefs.GetString("DriveType") == "ManualDriving")
             return manualDrive;
 
@@ -183,13 +178,11 @@ public class CreateProject : MonoBehaviour
     }
 
     // Return the correct TrackMaker prefab
-    private GameObject ChooseTrack()
-    {
+    private GameObject ChooseTrack() {
         string trackType = PlayerPrefs.GetString("TrackType");
         string difficulty = PlayerPrefs.GetString("Difficulty");
 
-        if (trackType == "Randomly Created")
-        {
+        if (trackType == "Randomly Created") {
             if (difficulty == "Hard")
                 return hardTrackMaker;
             else if (difficulty == "Easy")
@@ -197,8 +190,7 @@ public class CreateProject : MonoBehaviour
             else if (difficulty == "Medium")
                 return mediumTrackMaker;
         }
-        else if (trackType == "Standard")
-        {
+        else if (trackType == "Standard") {
             if (difficulty == "Hard")
                 return hardPremadeTrack;
             else if (difficulty == "Easy")
@@ -216,21 +208,13 @@ public class CreateProject : MonoBehaviour
     }
 
     // Import PlayerPrefs from prefsFile
-    // Only difficulty and Track Type can be changed
     private void ImportPrefs()
     {
-        string difficulty = PlayerPrefs.GetString("Difficulty");
-        string trackType = PlayerPrefs.GetString("TrackType");
-        ScreenManager.ResetPrefsToDefault();
-
-        try
-        {
-            using (StreamReader sr = new StreamReader(prefsFile))
-            {
+        try {
+            using (StreamReader sr = new StreamReader(prefsFile)) {
                 string line;
                 string[] prefsArray;
-                while ((line = sr.ReadLine()) != null)
-                {
+                while ((line = sr.ReadLine()) != null) {
                     prefsArray = line.Split(' ');
                     if (PlayerPrefs.HasKey(prefsArray[0]))
                         PlayerPrefs.SetString(prefsArray[0], prefsArray[1]);
@@ -238,22 +222,16 @@ public class CreateProject : MonoBehaviour
                 sr.Close();
             }
         }
-        catch
-        {
+        catch {
             // If a prefsFile does not exist, create one
             WritePrefs();
         }
-
-        PlayerPrefs.SetString("Difficulty", difficulty);
-        PlayerPrefs.SetString("TrackType", trackType);
     }
 
     // Store Player Prefs in prefsFile
-    private void WritePrefs()
-    {
+    private void WritePrefs() {
         StreamWriter sw;
-        using (sw = File.CreateText(prefsFile))
-        {
+        using (sw = File.CreateText(prefsFile)) {
             sw.WriteLine(ScreenManager.GetPrefsTxt());
         }
         sw.Close();

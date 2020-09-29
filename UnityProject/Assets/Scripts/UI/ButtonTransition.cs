@@ -41,17 +41,13 @@ public class ButtonTransition : MonoBehaviour
 
     #region Awake/Start/Update
     // Delete this instance if an instance already exists
-    private void Awake()
-    {
+    private void Awake() {
         if (instance != null && instance != this)
-        {
             Destroy(this.gameObject);
-        }
         else instance = this;
     }
 
-    private void Start()
-    {
+    private void Start() {
         // Instantiate Dictionaries and Lists
         ScreenDictionary = new Dictionary<string, RectTransform>();
         ScreenList = new List<string>();
@@ -59,8 +55,7 @@ public class ButtonTransition : MonoBehaviour
         transition = false;
 
         // Add Screen name and transform to Dictionary as a pair
-        foreach (Transform child in transform)
-        {
+        foreach (Transform child in transform) {
             ScreenDictionary.Add(child.name, (RectTransform)child);
             ScreenList.Add(child.name);
             foreach (Transform trans in child)
@@ -72,20 +67,16 @@ public class ButtonTransition : MonoBehaviour
     }
 
     // Moves buttons off screen during transition
-    private void Update()
-    {
+    private void Update() {
         float screenLength = Screen.width;
-        if (transition)
-        {
+        if (transition) {
             // Using roundabout method rather than Invoke/Coroutine due to the static status of the class and functions
-            if (Time.realtimeSinceStartup > timer)
-            {
+            if (Time.realtimeSinceStartup > timer) {
                 SetTransitionState();
                 timer = 0;
                 return;
             }
-            else
-            {
+            else {
                 ScreenDictionary[previousScreen].localPosition += new Vector3(screenLength / transitionTime * Time.deltaTime * direction, 0, 0);
                 ScreenDictionary[currentScreen].localPosition += new Vector3(screenLength / transitionTime * Time.deltaTime * direction, 0, 0);
             }
@@ -103,8 +94,7 @@ public class ButtonTransition : MonoBehaviour
             throw new System.Exception(screen + " screen not found in dictionary");
         else if (currentScreen == screen)
             return;
-        else if (transition)
-        {
+        else if (transition) {
             Debug.Log("Still finishing past transition. Can't transition now");
             return;
         }
@@ -123,8 +113,7 @@ public class ButtonTransition : MonoBehaviour
     public static Dictionary<string, List<string>> GetScreenMap()
     {
         Dictionary<string, List<string>> returnDictionary = new Dictionary<string, List<string>>();
-        foreach (KeyValuePair<string, RectTransform> pair in ScreenDictionary)
-        {
+        foreach (KeyValuePair<string, RectTransform> pair in ScreenDictionary) {
             List<string> buttonsInScreen = new List<string>();
             foreach (Transform trans in pair.Value)
                 buttonsInScreen.Add(trans.name);
@@ -137,8 +126,7 @@ public class ButtonTransition : MonoBehaviour
 
     #region Private Functions
     // Terminate Button Transition
-    private void SetTransitionState()
-    {
+    private void SetTransitionState() {
         // Terminate the movement of Buttons and disable any buttons not currently shown
         RectTransform previous = ScreenDictionary[previousScreen];
         RectTransform current = ScreenDictionary[currentScreen];
@@ -150,12 +138,10 @@ public class ButtonTransition : MonoBehaviour
     }
 
     // Test Button Movements every 4 sec
-    private IEnumerator ScreenTest()
-    {
+    private IEnumerator ScreenTest() {
         yield return new WaitForSeconds(1f);
         int selector = 0;
-        while(true)
-        {
+        while(true) {
             string tempKey = ScreenList[selector++ % ScreenList.Count];
             if (tempKey == currentScreen)
                 continue;
