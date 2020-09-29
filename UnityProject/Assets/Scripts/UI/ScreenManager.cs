@@ -22,23 +22,18 @@ public class ScreenManager : MonoBehaviour
     #endregion
 
     // Delete this instance if an instance already exists
-    private void Awake()
-    {
+    private void Awake() {
         if (instance != null && instance != this)
-        {
             Destroy(this.gameObject);
-        }
         else instance = this;
     }
 
     // Start is called before the first frame update
-    void Start()
-    {
+    void Start() {
         ButtonTransition.ScreensMappedEvent += CreateDictionary;
     }
 
-    public void CreateDictionary()
-    {
+    public void CreateDictionary()  {
         ScreenMap = ButtonTransition.GetScreenMap();
         prefs = new Dictionary<string, string>();
         screenList = new LinkedList<string>(ButtonTransition.GetScreenList());
@@ -58,12 +53,10 @@ public class ScreenManager : MonoBehaviour
             ButtonTransition.DisplayButtons("DriveType", false);
         else if (currentScreen == "Algorithm" && driveType == "AIDriven" && prefs["Difficulty"] == "Extreme")
             ButtonTransition.DisplayButtons("Difficulty", false);
-        else if (currentScreen == "Start")
-        {
+        else if (currentScreen == "Start") {
             if (driveType == "Demo")
                 ButtonTransition.DisplayButtons("DriveType", false);
-            else if (prefs["NetworkSource"] == "Import" || driveType == "ManualDriving")
-            {
+            else if (driveType == "ManualDriving")  {
                 if (prefs["Difficulty"] == "Extreme")
                     ButtonTransition.DisplayButtons("Difficulty", false);
                 else
@@ -76,20 +69,17 @@ public class ScreenManager : MonoBehaviour
             ButtonTransition.DisplayButtons(screenList.Find(currentScreen).Previous.Value, false);
     }
 
-    public void Next(string currentScreen)
-    {
+    public void Next(string currentScreen) {
         ButtonTransition.DisplayButtons(screenList.Find(currentScreen).Next.Value);
     }
 
-    public void ButtonPress(string buttonName)
-    {
+    public void ButtonPress(string buttonName) {
         string screenName;
 
         if (ButtonTransition.Transition)
             // Dont' transition to another screen if the buttons are still moving
             return;
-        else if (!FindScreen(buttonName, out screenName))
-        {
+        else if (!FindScreen(buttonName, out screenName)) {
             Debug.Log("Button: " + buttonName + " not recognized");
             return;
         }
@@ -98,53 +88,39 @@ public class ScreenManager : MonoBehaviour
 
         if (buttonName == "Demo")
             ButtonTransition.DisplayButtons("Start");
-        else if (buttonName == "Import")
+        else if (buttonName == "Import") {
+            prefs["DriveType"] = "AIDriven";
             ButtonTransition.DisplayButtons("Difficulty");
+        }
         else if (buttonName == "ManualDriving")
             ButtonTransition.DisplayButtons("Difficulty");
-        else if (buttonName == "Extreme")
-        {
-            if (prefs["NetworkSource"] == "Import" || prefs["DriveType"] == "ManualDriving")
+        else if (buttonName == "Extreme") {
+            if (prefs["DriveType"] == "ManualDriving")
                 ButtonTransition.DisplayButtons("Start");
             else if (prefs["DriveType"] == "AIDriven")
                 ButtonTransition.DisplayButtons("Algorithm");
         }
-        else if (screenName == "TrackType" && (prefs["NetworkSource"] == "Import" || prefs["DriveType"] == "ManualDriving"))
+        else if (screenName == "TrackType" && prefs["DriveType"] == "ManualDriving")
             ButtonTransition.DisplayButtons("Start");
         else
             ButtonTransition.DisplayButtons(screenList.Find(screenName).Next.Value);
     }
 
-    public void Begin()
-    {
-        if (prefs.ContainsKey("DriveType") && prefs["DriveType"] == "Demo")
-        {
-            PlayerPrefs.SetString("Demo", "true");
-            CallScene();
-        }
-        else
-        {
-            foreach (string category in allCategories)
-                if (!prefs.ContainsKey(category))
-                    prefs.Add(category, GetDefault(category));
+    public void Begin() {
+        // If a category is missing, add it
+        foreach (string category in allCategories)
+            if (!prefs.ContainsKey(category))
+                prefs.Add(category, GetDefault(category));
 
-            bool import = prefs["NetworkSource"] == "import";
-            if (import)
-                PlayerPrefs.SetString("NetworkSource", "Import");
+        // Convert all saved prefs to PlayerPrefs
+        foreach (KeyValuePair<string, string> pair in prefs)
+            PlayerPrefs.SetString(pair.Key, pair.Value);
 
-            foreach (KeyValuePair<string, string> pair in prefs)
-                if (!import || !PlayerPrefs.HasKey(pair.Key))
-                    PlayerPrefs.SetString(pair.Key, pair.Value);
-
-            PlayerPrefs.SetString("Demo", "false");
-            CallScene();
-        }
-        return;
+        CallScene();
     }
 
     // Updates Slider Values. Values not yet truncated
-    public void SliderUpdate(Slider slider)
-    {
+    public void SliderUpdate(Slider slider) {
         string[] wordArray = slider.name.Split(' ');
         int sliderNumber = System.Convert.ToInt32(wordArray[wordArray.Length - 1]);
 
@@ -160,33 +136,26 @@ public class ScreenManager : MonoBehaviour
         }
     }
 
-    public static void ResetPrefsToDefault()
-    {
-        PlayerPrefs.DeleteAll();
+    public static void ResetPrefsToDefault() {
         foreach (string category in allCategories)
             PlayerPrefs.SetString(category, GetDefault(category));
     }
 
-    public static string GetPrefsTxt()
-    {
-        string txt = "";
-        foreach (string category in allCategories)
-            txt += category + " " + PlayerPrefs.GetString(category) + '\n';
+    public static string GetPrefsTxt() {
+        string txt = "DriveType AIDriven" + '\n';
+        txt += "CarSelection " + PlayerPrefs.GetString("CarSelection") + '\n';
         return txt;
     }
 
-    private bool FindScreen(string buttonName, out string screen)
-    {
-        if (!dictionaryReady)
-        {
+    private bool FindScreen(string buttonName, out string screen) {
+        if (!dictionaryReady) {
             screen = "";
             Debug.Log("Dictionary not ready");
             return false;
         }
 
         foreach (KeyValuePair<string, List<string>> pair in ScreenMap)
-            if (pair.Value.Contains(buttonName))
-            {
+            if (pair.Value.Contains(buttonName)) {
                 screen = pair.Key;
                 return true;
             }
@@ -195,14 +164,13 @@ public class ScreenManager : MonoBehaviour
         return false;
     }
 
-    private static string GetDefault(string category)
-    {
+    private static string GetDefault(string category) {
         switch(category)
         {
             case "NetworkSource": return "Restart";
             case "DriveType": return "Demo";
             case "CarSelection": return "360Advanced";
-            case "Difficulty": return "Easy";
+            case "Difficulty": return "Extreme";
             case "TrackType": return "Standard";
             case "Algorithm": return "BestTwo";
             case "carCount": return "30";
@@ -215,8 +183,7 @@ public class ScreenManager : MonoBehaviour
         }
     }
 
-    private void CallScene()
-    {
+    private void CallScene() {
         SceneManager.LoadScene(1);
     }
 }
