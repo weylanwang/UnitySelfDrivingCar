@@ -19,7 +19,7 @@ The goal is for cars to attempt to navigate the racetrack autonomously without c
 
 ![](Images/car1.png) ![](Images/car2.png) 
 
-Every simulation starts with the creation of Generation 1, a batch of cars with minimal driving capacity. Each car has an unevolved neural network which dictates the movements of the car. Once all cars inevitably crash (or are eliminated due to inactivity), a genetic algorithm samples the best cars to use as the template for the next generation of cars. Mutations are applied to ensure diversity within the new generation. The process repeats until the maximum generation number is reached. 
+Every simulation starts with the creation of Generation 1, a batch of cars with minimal driving capacity. Each car has an unevolved neural network which dictates the movements of the car. Once all cars inevitably crash (or are eliminated due to inactivity), a genetic algorithm samples the best cars to use as the template for the next generation of cars. Mutations are applied to ensure diversity within the new generation. The process repeats until the maximum generation number of 30 is reached. 
 
 ## Neural Network Details
 
@@ -86,7 +86,7 @@ To view this project, clone this repository and open using the Unity version sta
 ## Contributors
 Nam-Giao Nguyen: [LinkedIn](https://www.linkedin.com/in/nam-giao-nguyen-7156981b8/)
 
-Daniel Park: [LinkedIn](https://www.linkedin.com/in/daniel-park-2av14/)
+Daniel Park: [LinkedIn](https://www.linkedin.com/in/dp145/)
 
 Weylan Wang: [LinkedIn](https://www.linkedin.com/in/weylanwang/)
 
